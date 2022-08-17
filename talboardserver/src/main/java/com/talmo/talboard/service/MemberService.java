@@ -48,7 +48,7 @@ public class MemberService {
     public String findId(String emailAddress) {
         List<Member> findMember = memberRepository.findActualMemberByEmailAddress(emailAddress);
         if(findMember.isEmpty()) {
-            throw new IllegalStateException("회원이 존재하지 않습니다");
+            throw new IllegalStateException("존재하지 않는 이메일 주소입니다");
         }
         Member m = findMember.get(0);
         return m.getId();
@@ -62,7 +62,7 @@ public class MemberService {
         // TODO: 해당 멤버의 이메일 주소로 비밀번호 정보 보내는 기능
         List<Member> findMember = memberRepository.findActualMemberById(id);
         if(findMember.isEmpty()) {
-            throw new IllegalStateException("회원이 존재하지 않습니다");
+            throw new IllegalStateException("존재하지 않는 아이디입니다");
         }
         Member m = findMember.get(0);
         return m.getPassword();

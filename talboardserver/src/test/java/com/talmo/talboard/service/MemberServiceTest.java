@@ -16,9 +16,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberServiceTest {
     @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     @Test
     public void join() {
+        // given
+        Member member = new Member("id", "pw", "test@naver.com");
+
+        // when
+        Long member_no = memberService.join(member);
+
+        // then
+        Member findMember = memberRepository.findOne(member_no);
+        assertEquals(member.getId(), findMember.getId());
+        assertEquals(member.getPassword(), findMember.getPassword());
+        assertEquals(member.getEmailAddress(), findMember.getEmailAddress());
+    }
+
+    @Test
+    public void join_중복체크() {
+        // given
+        Member member1 = new Member("test", "123", "test@naver.com");
+        Member member2 = new Member("test", "123", "talmo@naver.com");
+
+        // when
+        memberService.join(member1);
+
+        // then
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+        assertEquals("이미 존재하는 회원입니다", thrown.getMessage());
     }
 
     @Test
@@ -37,28 +63,38 @@ public class MemberServiceTest {
     @Test
     public void findId() {
         // given
-        String id = "testpw";
-        Member member = new Member(id, "testpw", "test@naver.com");
+        Member member = new Member("id", "pw", "test@naver.com");
         memberService.join(member);
 
         // when
         String findId = memberService.findId(member.getEmailAddress());
 
         // then
-        assertEquals(id, findId);
+        assertEquals(member.getId(), findId);
+    }
+
+    @Test
+    public void findId_실패() {
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.findId("cant@exist.com"));
+        assertEquals("존재하지 않는 이메일 주소입니다", thrown.getMessage());
     }
 
     @Test
     public void findPassword() {
         // given
-        String pw = "testpw";
-        Member member = new Member("testid", pw, "test@naver.com");
+        Member member = new Member("id", "pw", "test@naver.com");
         memberService.join(member);
 
         // when
         String findPassword = memberService.findPassword(member.getId());
 
         // then
-        assertEquals(pw, findPassword);
+        assertEquals(member.getPassword(), findPassword);
+    }
+
+    @Test
+    public void findPassword_실패() {
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.findPassword("cantexist"));
+        assertEquals("존재하지 않는 아이디입니다", thrown.getMessage());
     }
 }

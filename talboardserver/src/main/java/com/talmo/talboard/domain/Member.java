@@ -25,9 +25,13 @@ public class Member {
     @NotNull
     private String emailAddress;
 
+    @NotNull
     private boolean adminYn;
+
+    @NotNull
     private boolean resignYn;
 
+    @NotNull
     private LocalDateTime registDate;
 
 //    @OneToMany(mappedBy = "member")
@@ -39,7 +43,7 @@ public class Member {
 //    @OneToMany(mappedBy = "member")
 //    private List<Comment> comments = new ArrayList<>();
 
-    public Member() {
+    protected Member() {
         this.resignYn = false;
     }
 
@@ -47,7 +51,9 @@ public class Member {
         this.id = id;
         this.password = password;
         this.emailAddress = emailAddress;
+        this.adminYn = false;
         this.resignYn = false;
+        this.registDate = LocalDateTime.now();
     }
 
     //==비즈니스 로직==//
