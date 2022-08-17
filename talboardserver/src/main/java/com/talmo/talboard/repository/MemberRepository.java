@@ -25,16 +25,16 @@ public class MemberRepository {
             .getResultList();
     }
 
-    public Member findActualMemberById(String id) {
+    public List<Member> findActualMemberById(String id) {
         return em.createQuery("SELECT m FROM Member m WHERE m.id = :id AND m.resignYn = false", Member.class)
             .setParameter("id", id)
-            .getSingleResult();
+            .getResultList();
     }
 
-    public Member findActualMemberByEmailAddress(String emailAddress) {
+    public List<Member> findActualMemberByEmailAddress(String emailAddress) {
         return em.createQuery("SELECT m FROM Member m WHERE m.emailAddress = :emailAddress AND m.resignYn = false", Member.class)
             .setParameter("emailAddress", emailAddress)
-            .getSingleResult();
+            .getResultList();
     }
 
 }

@@ -26,8 +26,8 @@ public class MemberService {
      * 아이디가 같거나 이메일이 같은 회원이 있는지 체크
      */
     private void chkDuplicateMember(Member member) {
-        if(memberRepository.findActualMemberById(member.getId()) == null
-            || memberRepository.findActualMemberByEmailAddress(member.getEmailAddress()) == null) {
+        if(!memberRepository.findActualMemberById(member.getId()).isEmpty()
+            || !memberRepository.findActualMemberByEmailAddress(member.getEmailAddress()).isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다");
         }
     }
@@ -46,7 +46,11 @@ public class MemberService {
      */
     @Transactional
     public String findId(String emailAddress) {
-        Member m = memberRepository.findActualMemberByEmailAddress(emailAddress);
+        List<Member> findMember = memberRepository.findActualMemberByEmailAddress(emailAddress);
+        if(findMember.isEmpty()) {
+            throw new IllegalStateException("회원이 존재하지 않습니다");
+        }
+        Member m = findMember.get(0);
         return m.getId();
     }
 
@@ -56,7 +60,11 @@ public class MemberService {
     @Transactional
     public String findPassword(String id) {
         // TODO: 해당 멤버의 이메일 주소로 비밀번호 정보 보내는 기능
-        Member m = memberRepository.findActualMemberById(id);
+        List<Member> findMember = memberRepository.findActualMemberById(id);
+        if(findMember.isEmpty()) {
+            throw new IllegalStateException("회원이 존재하지 않습니다");
+        }
+        Member m = findMember.get(0);
         return m.getPassword();
     }
 }

@@ -40,12 +40,14 @@ public class Member {
 //    private List<Comment> comments = new ArrayList<>();
 
     public Member() {
+        this.resignYn = false;
     }
 
     public Member(String id, String password, String emailAddress) {
         this.id = id;
         this.password = password;
         this.emailAddress = emailAddress;
+        this.resignYn = false;
     }
 
     //==비즈니스 로직==//
