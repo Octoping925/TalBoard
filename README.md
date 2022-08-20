@@ -1,4 +1,4 @@
-# 프로젝트 이름
+# TalBoard
 
 <p align="center">
   <br>
@@ -7,6 +7,13 @@
 </p>
 
 목차
+---
+1. [프로젝트 소개](#프로젝트-소개)
+2. [기술 스택](#기술-스택)
+3. [구현 기능](#구현-기능)
+
+
+<br>
 
 ## 프로젝트 소개
 
@@ -18,27 +25,20 @@
 GIF Images
 </p>
 
-<br>
+<br><br>
 
 ## 기술 스택
 
-| JavaScript | TypeScript |  React   |  Node   |
-| :--------: | :--------: | :------: | :-----: |
-|   ![js]    |   ![ts]    | ![react] | ![node] |
+| TypeScript |  React   |  Spring Boot  |  MySQL   |
+| :--------: | :------: | :-----------: | :------: |
+|   ![ts]    | ![react] |   ![spring]   | ![mysql] |
 
 <br>
 
 ## 구현 기능
+TBD
 
-### 기능 1
-
-### 기능 2
-
-### 기능 3
-
-### 기능 4
-
-<br>
+<br><br>
 
 ## 배운 점 & 아쉬운 점
 
@@ -46,15 +46,14 @@ GIF Images
 
 </p>
 
-<br>
+<br><br>
 
 ## 라이센스
 
 MIT &copy; [NoHack](mailto:lbjp114@gmail.com)
 
 <!-- Stack Icon Refernces -->
-
-[js]: /images/stack/javascript.svg
 [ts]: /images/stack/typescript.svg
 [react]: /images/stack/react.svg
-[node]: /images/stack/node.svg
+[spring]: /images/stack/spring.svg
+[mysql]: /images/stack/mysql.svg
