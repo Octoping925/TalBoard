@@ -45,7 +45,7 @@ public class MemberService {
      * 이메일 주소로 아이디 찾기
      */
     @Transactional
-    public String findId(String emailAddress) {
+    public String findId(String emailAddress) throws IllegalStateException {
         List<Member> findMember = memberRepository.findActualMemberByEmailAddress(emailAddress);
         if(findMember.isEmpty()) {
             throw new IllegalStateException("존재하지 않는 이메일 주소입니다");

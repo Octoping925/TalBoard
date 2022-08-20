@@ -56,8 +56,39 @@ public class Member {
         this.registDate = LocalDateTime.now();
     }
 
+    private boolean isValidPassword(String password) {
+        return password.length() >= 6 && !password.contains(" ");
+    }
+
+    private boolean isValidEmailAddress(String emailAddress) {
+        if(!emailAddress.contains("@")) return false;
+        String[] domain = emailAddress.split("@");
+        if(domain[0].length() * domain[1].length() == 0) return false;
+
+        return true;
+    }
+
     //==비즈니스 로직==//
     public void resign() {
         this.resignYn = true;
     }
+
+    public boolean changePassword(String password) {
+        if(isValidPassword(password)) {
+            this.password = password;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean changeEmailAddress(String emailAddress) {
+        if(isValidEmailAddress(emailAddress)) {
+            this.emailAddress = emailAddress;
+            return true;
+        }
+        return false;
+    }
+
+
+
 }
