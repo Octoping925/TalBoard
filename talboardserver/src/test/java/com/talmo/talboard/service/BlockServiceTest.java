@@ -41,14 +41,14 @@ public class BlockServiceTest {
         Long memberNo3 = memberService.join(member3);
 
         blockService.blockMember(member, member2);
-        blockService.blockMember(member3, member2);
+        blockService.blockMember(member2, member3);
 
         // when
         blockService.cleanMember(memberNo2);
 
         // then
         assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
-        assertTrue(blockRepository.findBlock(memberNo3, memberNo2).isEmpty());
+        assertTrue(blockRepository.findBlock(memberNo2, memberNo3).isEmpty());
     }
 
     @Test
