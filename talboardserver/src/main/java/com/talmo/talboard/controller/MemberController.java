@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -24,18 +26,15 @@ public class MemberController {
     })
     @RequestMapping(value = "/members/find/id", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ResponseObject> findId(MemberVO vo) {
+    public ResponseEntity<Map<String, Object>> findId(MemberVO vo) {
         try {
             String id = memberService.findId(vo.getEmailAddress());
             return ResponseEntity.ok()
-                    .headers(new HttpHeaders())
-                    .body(ResponseObject.builder().data(id).build());
+                    .body(ResponseObject.create(id, ""));
         }
         catch(IllegalStateException e) {
-            String message = e.getMessage();
             return ResponseEntity.badRequest()
-                    .headers(new HttpHeaders())
-                    .body(ResponseObject.builder().message(message).build());
+                    .body(ResponseObject.create(null, e.getMessage()));
         }
     }
 
