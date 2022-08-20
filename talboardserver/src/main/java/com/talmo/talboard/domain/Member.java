@@ -48,6 +48,12 @@ public class Member {
     }
 
     public Member(String id, String password, String emailAddress) {
+        if(!isValidId(id)
+        || !isValidPassword(password)
+        || !isValidEmailAddress(emailAddress)) {
+            throw new IllegalArgumentException("아이디, 비밀번호 유효성 검사 실패");
+        }
+
         this.id = id;
         this.password = password;
         this.emailAddress = emailAddress;
@@ -56,14 +62,22 @@ public class Member {
         this.registDate = LocalDateTime.now();
     }
 
+    private boolean isValidId(String id) {
+        if(id.contains(" ")) return false;
+        if(id.length() < 6) return false;
+        return true;
+    }
+
     private boolean isValidPassword(String password) {
         return password.length() >= 6 && !password.contains(" ");
     }
 
     private boolean isValidEmailAddress(String emailAddress) {
         if(!emailAddress.contains("@")) return false;
+        if(emailAddress.contains(" ")) return false;
+
         String[] domain = emailAddress.split("@");
-        if(domain[0].length() * domain[1].length() == 0) return false;
+        if(domain.length < 2) return false;
 
         return true;
     }
@@ -87,6 +101,12 @@ public class Member {
             return true;
         }
         return false;
+    }
+
+    public void setAdminYn(boolean status) {
+        if(!resignYn) {
+            this.adminYn = status;
+        }
     }
 
 

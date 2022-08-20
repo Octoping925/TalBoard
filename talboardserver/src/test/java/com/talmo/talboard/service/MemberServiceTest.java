@@ -18,10 +18,14 @@ public class MemberServiceTest {
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
+    String testId = "ididid";
+    String testPw = "pwpwpw";
+    String testEmail = "test@test.com";
+
     @Test
     public void join() {
         // given
-        Member member = new Member("id", "pw", "test@naver.com");
+        Member member = new Member(testId, testPw, testEmail);
 
         // when
         Long member_no = memberService.join(member);
@@ -36,34 +40,41 @@ public class MemberServiceTest {
     @Test
     public void join_중복체크() {
         // given
-        Member member1 = new Member("test", "123", "test@naver.com");
-        Member member2 = new Member("test", "123", "talmo@naver.com");
+        Member member1 = new Member(testId, testPw, testEmail);
+        Member member2 = new Member(testId, testPw, testEmail + "aaa");
 
         // when
         memberService.join(member1);
 
         // then
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
-        assertEquals("이미 존재하는 회원입니다", thrown.getMessage());
+        assertEquals("이미 존재하는 아이디 또는 이메일", thrown.getMessage());
     }
 
     @Test
     public void resign() {
         // given
-        Member member = new Member("testid", "testpw", "test@naver.com");
-        Long member_no = memberService.join(member);
+        Member member = new Member(testId + "1", testPw, testEmail);
+        memberRepository.save(member);
+        Member member2 = new Member(testId + "2", testPw, testEmail + "1");
+        member2.setAdminYn(true);
+        memberRepository.save(member2);
+        Member member3 = new Member(testId + "3", testPw, testEmail + "2");
+        memberRepository.save(member3);
 
         // when
-        memberService.resign(member_no);
+        memberService.resign(member.getId(), member.getId());
+        memberService.resign(member2.getId(), member3.getId());
 
         // then
         assertTrue(member.isResignYn());
+        assertTrue(member3.isResignYn());
     }
 
     @Test
     public void findId() {
         // given
-        Member member = new Member("id", "pw", "test@naver.com");
+        Member member = new Member(testId, testPw, testEmail);
         memberService.join(member);
 
         // when
@@ -76,13 +87,13 @@ public class MemberServiceTest {
     @Test
     public void findId_실패() {
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.findId("cant@exist.com"));
-        assertEquals("존재하지 않는 이메일 주소입니다", thrown.getMessage());
+        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
     }
 
     @Test
     public void findPassword() {
         // given
-        Member member = new Member("id", "pw", "test@naver.com");
+        Member member = new Member(testId, testPw, testEmail);
         memberService.join(member);
 
         // when
@@ -95,6 +106,6 @@ public class MemberServiceTest {
     @Test
     public void findPassword_실패() {
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.findPassword("cantexist"));
-        assertEquals("존재하지 않는 아이디입니다", thrown.getMessage());
+        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
     }
 }
