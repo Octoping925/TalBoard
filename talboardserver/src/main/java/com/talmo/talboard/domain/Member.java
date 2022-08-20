@@ -37,6 +37,9 @@ public class Member {
 //    @OneToMany(mappedBy = "member")
 //    private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "blockId.member")
+    private List<Block> blocks = new ArrayList<>();
+
     @OneToMany(mappedBy = "member")
     private List<Notice> notices = new ArrayList<>();
 
@@ -87,20 +90,18 @@ public class Member {
         this.resignYn = true;
     }
 
-    public boolean changePassword(String password) {
-        if(isValidPassword(password)) {
-            this.password = password;
-            return true;
+    public void changePassword(String password) {
+        if(!isValidPassword(password)) {
+            throw new IllegalArgumentException("비밀번호 유효성 검사 실패");
         }
-        return false;
+        this.password = password;
     }
 
-    public boolean changeEmailAddress(String emailAddress) {
-        if(isValidEmailAddress(emailAddress)) {
-            this.emailAddress = emailAddress;
-            return true;
+    public void changeEmailAddress(String emailAddress) {
+        if(!isValidEmailAddress(emailAddress)) {
+            throw new IllegalArgumentException("이메일 유효성 검사 실패");
         }
-        return false;
+        this.emailAddress = emailAddress;
     }
 
     public void setAdminYn(boolean status) {

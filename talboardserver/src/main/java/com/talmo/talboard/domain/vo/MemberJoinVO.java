@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberJoinVO {
-    @ApiModelProperty(value = "아이디", dataType = "string", required = true)
+    @ApiModelProperty(value = "아이디", required = true)
     String id;
 
-    @ApiModelProperty(value = "비밀번호", dataType = "string", required = true)
+    @ApiModelProperty(value = "비밀번호", required = true)
     String password;
 
-    @ApiModelProperty(value = "이메일 주소", dataType = "string", required = true)
+    @ApiModelProperty(value = "이메일 주소", required = true)
     String emailAddress;
 }

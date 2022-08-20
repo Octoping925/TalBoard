@@ -6,9 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberResignVO {
+public class MemberFindBlockListVO {
     @ApiModelProperty(value = "아이디", required = true)
     String id;
-    @ApiModelProperty(value = "탈퇴시킬 계정의 아이디", required = true)
-    String resign_member_id;
 }
