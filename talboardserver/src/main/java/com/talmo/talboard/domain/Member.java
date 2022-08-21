@@ -4,6 +4,8 @@ import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -47,7 +49,9 @@ public class Member {
     private List<Comment> comments = new ArrayList<>();
 
     protected Member() {
+        this.adminYn = false;
         this.resignYn = false;
+        this.registDate = LocalDateTime.now();
     }
 
     public Member(String id, String password, String emailAddress) {
@@ -76,18 +80,16 @@ public class Member {
     }
 
     private boolean isValidEmailAddress(String emailAddress) {
-        if(!emailAddress.contains("@")) return false;
-        if(emailAddress.contains(" ")) return false;
-
-        String[] domain = emailAddress.split("@");
-        if(domain.length < 2) return false;
-
-        return true;
+        String regx = "^(.+)@(.+)$";
+        Pattern pattern = Pattern.compile(regx);
+        Matcher matcher = pattern.matcher(emailAddress);
+        return matcher.matches();
     }
 
     //==비즈니스 로직==//
     public void resign() {
         this.resignYn = true;
+        this.adminYn = false;
     }
 
     public void changePassword(String password) {

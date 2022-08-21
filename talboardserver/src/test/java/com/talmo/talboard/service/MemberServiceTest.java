@@ -2,6 +2,7 @@ package com.talmo.talboard.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
@@ -21,17 +22,10 @@ public class MemberServiceTest {
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
-    String testId = "ididid";
-    String testId2 = "ididid2";
-    String testPw = "pwpwpw";
-    String testPw2 = "pwpwpw2";
-    String testEmail = "test@test.com";
-    String testEmail2 = "test2@test.com";
-
     @Test
     public void join() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
+        Member member = TestHelper.createTestMember();
 
         // when
         Long member_no = memberService.join(member);
@@ -46,8 +40,8 @@ public class MemberServiceTest {
     @Test
     public void join_중복체크() {
         // given
-        Member member1 = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId, testPw2, testEmail2);
+        Member member1 = new Member(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+        Member member2 = new Member(TestHelper.testId, TestHelper.testPw2, TestHelper.testEmail2);
 
         // when
         memberService.join(member1);
@@ -60,8 +54,8 @@ public class MemberServiceTest {
     @Test
     public void resign() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail + "1");
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
         member.setAdminYn(true);
 
         memberRepository.save(member);
@@ -79,8 +73,8 @@ public class MemberServiceTest {
     @Test
     public void resign_실패() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
 
         memberRepository.save(member);
         memberRepository.save(member2);
@@ -97,7 +91,7 @@ public class MemberServiceTest {
     @Test
     public void findId() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
+        Member member = TestHelper.createTestMember();
         memberService.join(member);
 
         // when
@@ -116,7 +110,7 @@ public class MemberServiceTest {
     @Test
     public void findPassword() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
+        Member member = TestHelper.createTestMember();
         memberService.join(member);
 
         // when
@@ -135,31 +129,32 @@ public class MemberServiceTest {
     @Test
     public void updateMemberData() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
+        Member member = TestHelper.createTestMember();
         memberRepository.save(member);
 
         MemberDataChangeVO vo = new MemberDataChangeVO();
-        vo.setId(testId);
-        vo.setPassword(testPw2);
+        vo.setId(member.getId());
+        vo.setPassword(TestHelper.testPw2);
 
         // when
         memberService.updateMemberData(vo);
 
         // then
-        assertEquals(testPw2, memberRepository.findOneActualMemberById(testId).getPassword());
+        assertEquals(TestHelper.testPw2, memberRepository.findOneActualMemberById(member.getId()).getPassword());
     }
 
     @Test
     public void updateMemberData_실패() {
         // given
-        memberRepository.save(new Member(testId, testPw, testEmail));
+        Member member = TestHelper.createTestMember();
+        memberRepository.save(member);
 
         MemberDataChangeVO vo = new MemberDataChangeVO();
         MemberDataChangeVO vo2 = new MemberDataChangeVO();
-        vo.setId(testId);
-        vo.setEmailAddress(testEmail);
+        vo.setId(member.getId());
+        vo.setEmailAddress(member.getEmailAddress());
 
-        vo2.setId(testId2);
+        vo2.setId(TestHelper.testId2);
 
         // when
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(vo));

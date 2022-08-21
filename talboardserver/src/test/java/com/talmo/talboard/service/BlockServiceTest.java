@@ -1,5 +1,6 @@
 package com.talmo.talboard.service;
 
+import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
@@ -22,20 +23,12 @@ public class BlockServiceTest {
     @Autowired BlockRepository blockRepository;
     @Autowired MemberService memberService;
 
-    String testId = "ididid";
-    String testId2 = "ididid2";
-    String testId3 = "ididid3";
-    String testPw = "pwpwpw";
-    String testEmail = "test@test.com";
-    String testEmail2 = "test2@test.com";
-    String testEmail3 = "test3@test.com";
-
     @Test
     public void cleanMember() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
-        Member member3 = new Member(testId3, testPw, testEmail3);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
+        Member member3 = TestHelper.createTestMember(3);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
         Long memberNo3 = memberService.join(member3);
@@ -54,8 +47,8 @@ public class BlockServiceTest {
     @Test
     public void blockMember() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
 
@@ -69,8 +62,8 @@ public class BlockServiceTest {
     @Test
     public void blockMember_실패() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
         memberService.join(member);
         memberService.join(member2);
         blockService.blockMember(member, member2);
@@ -85,8 +78,8 @@ public class BlockServiceTest {
     @Test
     public void unblockMember() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
 
@@ -101,8 +94,8 @@ public class BlockServiceTest {
     @Test
     public void unblockMember_실패() {
         // given
-        Member member = new Member(testId, testPw, testEmail);
-        Member member2 = new Member(testId2, testPw, testEmail2);
+        Member member = TestHelper.createTestMember(1);
+        Member member2 = TestHelper.createTestMember(2);
         memberService.join(member);
         memberService.join(member2);
 
