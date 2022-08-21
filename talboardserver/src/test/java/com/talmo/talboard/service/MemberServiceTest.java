@@ -8,6 +8,8 @@ import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceTest {
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
+    @Autowired BlockService blockService;
 
     @Test
     public void join() {
@@ -163,5 +166,30 @@ public class MemberServiceTest {
         // then
         assertEquals("이미 존재하는 이메일", thrown.getMessage());
         assertEquals("회원 정보 찾지 못함", thrown2.getMessage());
+    }
+
+    @Test
+    public void findMemberBlockList() {
+        // given
+        Member[] members = new Member[3];
+        for(int i = 0; i < 3; ++i) {
+            members[i] = TestHelper.createTestMember(i);
+            memberService.join(members[i]);
+        }
+        blockService.blockMember(members[0], members[1]);
+        blockService.blockMember(members[0], members[2]);
+
+        // when
+        List<Member> blockList = memberService.findMemberBlockList(members[0].getId());
+
+        // then
+        assertEquals(members[1].getId(), blockList.get(0).getId());
+        assertEquals(members[2].getId(), blockList.get(1).getId());
+    }
+    
+    @Test
+    public void findMemberBlockList_실패() {
+        NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findMemberBlockList(TestHelper.testId));
+        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
     }
 }

@@ -11,6 +11,7 @@ import com.talmo.talboard.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -160,9 +161,16 @@ public class MemberController {
     })
     @GetMapping("/members/block")
     public ResponseEntity<Map<String, Object>> findBlockList(MemberFindBlockListVO vo) {
-        List<Member> memberBlockList = memberService.findMemberBlockList(vo.getId());
+        List<Member> blockList;
+        try {
+            blockList = memberService.findMemberBlockList(vo.getId());
+        }
+        catch(NoMemberFoundException e) {
+            blockList = new ArrayList<>();
+        }
+
         return ResponseEntity.ok()
-                .body(ResponseObject.create(memberBlockList, "조회 성공"));
+            .body(ResponseObject.create(blockList, "조회 성공"));
     }
 
     @ApiOperation(value="사용자 차단")
