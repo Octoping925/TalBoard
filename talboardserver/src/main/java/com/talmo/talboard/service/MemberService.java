@@ -50,12 +50,12 @@ public class MemberService {
         Member member = memberRepository.findOneActualMemberById(id);
         Member resignMember = memberRepository.findOneActualMemberById(resign_member_id);
 
-        if(!member.getMember_no().equals(resignMember.getMember_no())
+        if(!member.equals(resignMember)
         && !member.isAdminYn()) {
             throw new NoAuthorizationException("회원 탈퇴");
         }
 
-        blockService.cleanMember(resignMember.getMember_no());
+        blockService.cleanMember(resignMember);
         resignMember.resign();
     }
 
@@ -80,9 +80,7 @@ public class MemberService {
      * 회원 정보 변경
      */
     @Transactional
-    public void updateMemberData(MemberDataChangeVO vo) throws IllegalArgumentException {
-        Member member = memberRepository.findOneActualMemberById(vo.getId());
-
+    public void updateMemberData(Member member, MemberDataChangeVO vo) throws IllegalArgumentException {
         if(vo.getPassword() != null) {
             member.changePassword(vo.getPassword());
         }

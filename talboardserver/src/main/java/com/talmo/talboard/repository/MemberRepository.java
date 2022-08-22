@@ -14,7 +14,12 @@ public class MemberRepository {
     private final EntityManager em;
 
     public void save(Member member) {
-        em.persist(member);
+        if(member.getMember_no() == null) {
+            em.persist(member);
+        }
+        else {
+            em.merge(member);
+        }
     }
 
     public Member findOne(Long memberNo) {

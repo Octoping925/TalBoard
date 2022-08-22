@@ -1,6 +1,7 @@
 package com.talmo.talboard.config;
 
 import com.talmo.talboard.domain.Member;
+import com.talmo.talboard.domain.vo.MemberJoinVO;
 
 public class TestHelper {
     public static String testId = "ididid";
@@ -18,9 +19,15 @@ public class TestHelper {
     public static String failEmail3 = "@test.com";
 
     public static Member createTestMember() {
-        return new Member(testId, testPw, testEmail);
+        MemberJoinVO vo = new MemberJoinVO(testId, testPw, testEmail);
+        return Member.regist(vo);
     }
     public static Member createTestMember(int number) {
-        return new Member(testId + number, testPw + number, testEmail + number);
+        MemberJoinVO vo = new MemberJoinVO(testId + number, testPw + number, testEmail + number);
+        return Member.regist(vo);
+    }
+    public static Member createTestMember(String id, String password, String emailAddress) {
+        MemberJoinVO vo = new MemberJoinVO(id, password, emailAddress);
+        return Member.regist(vo);
     }
 }

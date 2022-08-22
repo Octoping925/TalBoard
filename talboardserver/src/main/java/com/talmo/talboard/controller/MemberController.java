@@ -1,6 +1,7 @@
 package com.talmo.talboard.controller;
 
 import com.talmo.talboard.config.ResponseObject;
+import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoAuthorizationException;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +60,7 @@ public class MemberController {
     @PostMapping("/members/regist")
     public ResponseEntity<Map<String, Object>> join(MemberJoinVO vo) {
         try {
-            Member member = new Member(vo.getId(), vo.getPassword(), vo.getEmailAddress());
+            Member member = Member.regist(vo);
             Long member_no = memberService.join(member);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(member_no, "회원 가입 성공"));
@@ -139,7 +141,8 @@ public class MemberController {
     @PatchMapping("/members/accountInfo")
     public ResponseEntity<Map<String, Object>> changeAccountInfo(MemberDataChangeVO vo) {
         try {
-            memberService.updateMemberData(vo);
+            Member member = memberRepository.findOneActualMemberById(vo.getId());
+            memberService.updateMemberData(member, vo);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "변경 성공"));
         }
@@ -161,9 +164,13 @@ public class MemberController {
     })
     @GetMapping("/members/block")
     public ResponseEntity<Map<String, Object>> findBlockList(MemberFindBlockListVO vo) {
-        List<Member> blockList;
+        List<MemberInfoVO> blockList;
         try {
-            blockList = memberService.findMemberBlockList(vo.getId());
+            Member member = memberRepository.findOneActualMemberById(vo.getId());
+            blockList = member.getBlockList().stream()
+                .map(Block::getBlockedMember)
+                .map(MemberInfoVO::new)
+                .collect(Collectors.toList());
         }
         catch(NoMemberFoundException e) {
             blockList = new ArrayList<>();

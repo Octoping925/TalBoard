@@ -5,6 +5,7 @@ import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
 import com.talmo.talboard.repository.MemberRepository;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +27,31 @@ public class BlockServiceTest {
     @Test
     public void cleanMember() {
         // given
-        Member member = TestHelper.createTestMember(1);
+        Member member1 = TestHelper.createTestMember(1);
         Member member2 = TestHelper.createTestMember(2);
         Member member3 = TestHelper.createTestMember(3);
-        Long memberNo = memberService.join(member);
+        memberService.join(member1);
         Long memberNo2 = memberService.join(member2);
-        Long memberNo3 = memberService.join(member3);
+        memberService.join(member3);
 
-        blockService.blockMember(member, member2);
+        blockService.blockMember(member1, member2);
+        blockService.blockMember(member1, member3);
         blockService.blockMember(member2, member3);
 
         // when
-        blockService.cleanMember(memberNo2);
+        blockService.cleanMember(member2);
 
         // then
-        assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
-        assertTrue(blockRepository.findBlock(memberNo2, memberNo3).isEmpty());
+//        assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
+        assertTrue(member1.getBlockList().stream()
+                .map(Block::getBlockedMember)
+                .map(Member::getMember_no)
+                .noneMatch(memberNo -> Objects.equals(memberNo, memberNo2)));
+
+        assertTrue(blockRepository.findMemberBlockedList(memberNo2).isEmpty());
+
+//        assertTrue(blockRepository.findBlock(memberNo2, memberNo3).isEmpty());
+        assertTrue(member2.getBlockList().isEmpty());
     }
 
     @Test
@@ -89,6 +99,7 @@ public class BlockServiceTest {
 
         // then
         assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
+        assertTrue(member.getBlockList().isEmpty());
     }
 
     @Test

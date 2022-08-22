@@ -1,9 +1,12 @@
 package com.talmo.talboard.domain;
 
 import com.sun.istack.NotNull;
+import com.talmo.talboard.domain.vo.MemberJoinVO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Entity;
@@ -40,7 +43,7 @@ public class Member {
 //    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "blockId.member")
-    private List<Block> blocks = new ArrayList<>();
+    private List<Block> blockList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Notice> notices = new ArrayList<>();
@@ -54,7 +57,7 @@ public class Member {
         this.registDate = LocalDateTime.now();
     }
 
-    public Member(String id, String password, String emailAddress) {
+    private Member(String id, String password, String emailAddress) {
         if(!isValidId(id)
         || !isValidPassword(password)
         || !isValidEmailAddress(emailAddress)) {
@@ -67,6 +70,10 @@ public class Member {
         this.adminYn = false;
         this.resignYn = false;
         this.registDate = LocalDateTime.now();
+    }
+
+    public boolean equals(Member member) {
+        return Objects.equals(this.member_no, member.getMember_no());
     }
 
     private boolean isValidId(String id) {
@@ -87,6 +94,10 @@ public class Member {
     }
 
     //==비즈니스 로직==//
+    public static Member regist(MemberJoinVO vo) {
+        return new Member(vo.getId(), vo.getPassword(), vo.getEmailAddress());
+    }
+
     public void resign() {
         this.resignYn = true;
         this.adminYn = false;
@@ -112,6 +123,13 @@ public class Member {
         }
     }
 
+    public boolean isBlockMember(Member member) {
+        return blockList.stream().map(Block::getBlockedMember)
+            .anyMatch(blockedMember -> blockedMember.equals(member));
+    }
 
+    public void cleanBlockList() {
+        this.blockList = new ArrayList<>();
+    }
 
 }

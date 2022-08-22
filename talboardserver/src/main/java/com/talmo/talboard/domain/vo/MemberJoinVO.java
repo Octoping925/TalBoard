@@ -15,4 +15,10 @@ public class MemberJoinVO {
 
     @ApiModelProperty(value = "이메일 주소", required = true)
     String emailAddress;
+
+    public MemberJoinVO(String id, String password, String emailAddress) {
+        this.id = id;
+        this.password = password;
+        this.emailAddress = emailAddress;
+    }
 }

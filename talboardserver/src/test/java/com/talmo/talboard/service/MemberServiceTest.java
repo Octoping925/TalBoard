@@ -43,8 +43,8 @@ public class MemberServiceTest {
     @Test
     public void join_중복체크() {
         // given
-        Member member1 = new Member(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
-        Member member2 = new Member(TestHelper.testId, TestHelper.testPw2, TestHelper.testEmail2);
+        Member member1 = TestHelper.createTestMember(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+        Member member2 = TestHelper.createTestMember(TestHelper.testId, TestHelper.testPw2, TestHelper.testEmail2);
 
         // when
         memberService.join(member1);
@@ -85,10 +85,12 @@ public class MemberServiceTest {
         // when
         NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member.getId(), member2.getId()));
         NoMemberFoundException thrown2 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(member.getId(), "cantExist"));
+        NoMemberFoundException thrown3 = assertThrows(NoMemberFoundException.class, () -> memberService.resign("cantExist", member.getId()));
 
         // then
         assertEquals("회원 탈퇴권한 없음", thrown.getMessage());
         assertEquals("회원 정보 찾지 못함", thrown2.getMessage());
+        assertEquals("회원 정보 찾지 못함", thrown3.getMessage());
     }
 
     @Test
@@ -140,7 +142,7 @@ public class MemberServiceTest {
         vo.setPassword(TestHelper.testPw2);
 
         // when
-        memberService.updateMemberData(vo);
+        memberService.updateMemberData(member, vo);
 
         // then
         assertEquals(TestHelper.testPw2, memberRepository.findOneActualMemberById(member.getId()).getPassword());
@@ -160,12 +162,10 @@ public class MemberServiceTest {
         vo2.setId(TestHelper.testId2);
 
         // when
-        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(vo));
-        NoMemberFoundException thrown2 = assertThrows(NoMemberFoundException.class, () -> memberService.updateMemberData(vo2));
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(member, vo));
 
         // then
         assertEquals("이미 존재하는 이메일", thrown.getMessage());
-        assertEquals("회원 정보 찾지 못함", thrown2.getMessage());
     }
 
     @Test
@@ -183,6 +183,7 @@ public class MemberServiceTest {
         List<Member> blockList = memberService.findMemberBlockList(members[0].getId());
 
         // then
+        assertEquals(2, blockList.size());
         assertEquals(members[1].getId(), blockList.get(0).getId());
         assertEquals(members[2].getId(), blockList.get(1).getId());
     }
