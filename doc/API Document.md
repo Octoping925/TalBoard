@@ -132,6 +132,18 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 
 ### API 정보
+* **/posts/regist** [POST] : 게시글 작성
+  - 매개변수
+    + member_no *(int, 필수)* : 사용자의 고유한 멤버 번호 입니다.
+    + title *(String, 필수)* : 게시글 제목 입니다.
+    + context *(String, 필수)* : 게시글 내용 입니다.
+    + 파일 정보 등등 미정
+  - 응답
+    + 200 - OK : 게시글 작성 성공
+    + 400 - Bad Request : 데이터 유효셩 검사 실패
+    + 401 - Unauthorized  : 게시글 작성 권한 없음
+    + 404 - Not Found : 게시글 정보를 찾지 못함
+
 * **/posts** [GET] : 전체 글 목록 조회
   - 매개변수
     + 없음
