@@ -8,7 +8,6 @@ import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +27,7 @@ public class MemberServiceTest {
     @Test
     public void join() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
 
         // when
         Long member_no = memberService.join(member);
@@ -43,8 +42,8 @@ public class MemberServiceTest {
     @Test
     public void join_중복체크() {
         // given
-        Member member1 = TestHelper.createTestMember(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
-        Member member2 = TestHelper.createTestMember(TestHelper.testId, TestHelper.testPw2, TestHelper.testEmail2);
+        Member member1 = TestHelper.createMember(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+        Member member2 = TestHelper.createMember(TestHelper.testId, TestHelper.testPw2, TestHelper.testEmail2);
 
         // when
         memberService.join(member1);
@@ -57,16 +56,16 @@ public class MemberServiceTest {
     @Test
     public void resign() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
         member.setAdminYn(true);
 
         memberRepository.save(member);
         memberRepository.save(member2);
 
         // when
-        memberService.resign(member.getId(), member2.getId());
-        memberService.resign(member.getId(), member.getId());
+        memberService.resign(member.getMember_no(), member2.getMember_no());
+        memberService.resign(member.getMember_no(), member.getMember_no());
 
         // then
         assertTrue(member.isResignYn());
@@ -76,16 +75,16 @@ public class MemberServiceTest {
     @Test
     public void resign_실패() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
 
         memberRepository.save(member);
         memberRepository.save(member2);
 
         // when
-        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member.getId(), member2.getId()));
-        NoMemberFoundException thrown2 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(member.getId(), "cantExist"));
-        NoMemberFoundException thrown3 = assertThrows(NoMemberFoundException.class, () -> memberService.resign("cantExist", member.getId()));
+        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member.getMember_no(), member2.getMember_no()));
+        NoMemberFoundException thrown2 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(member.getMember_no(),-1L));
+        NoMemberFoundException thrown3 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(-1L, member.getMember_no()));
 
         // then
         assertEquals("회원 탈퇴권한 없음", thrown.getMessage());
@@ -96,7 +95,7 @@ public class MemberServiceTest {
     @Test
     public void findId() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
         memberService.join(member);
 
         // when
@@ -115,7 +114,7 @@ public class MemberServiceTest {
     @Test
     public void findPassword() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
         memberService.join(member);
 
         // when
@@ -134,32 +133,29 @@ public class MemberServiceTest {
     @Test
     public void updateMemberData() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
         memberRepository.save(member);
 
         MemberDataChangeVO vo = new MemberDataChangeVO();
-        vo.setId(member.getId());
+        vo.setMember_no(member.getMember_no());
         vo.setPassword(TestHelper.testPw2);
 
         // when
         memberService.updateMemberData(member, vo);
 
         // then
-        assertEquals(TestHelper.testPw2, memberRepository.findOneActualMemberById(member.getId()).getPassword());
+        assertEquals(TestHelper.testPw2, memberRepository.findOne(member.getMember_no()).getPassword());
     }
 
     @Test
     public void updateMemberData_실패() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
         memberRepository.save(member);
 
         MemberDataChangeVO vo = new MemberDataChangeVO();
-        MemberDataChangeVO vo2 = new MemberDataChangeVO();
-        vo.setId(member.getId());
+        vo.setMember_no(member.getMember_no());
         vo.setEmailAddress(member.getEmailAddress());
-
-        vo2.setId(TestHelper.testId2);
 
         // when
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(member, vo));
@@ -173,24 +169,24 @@ public class MemberServiceTest {
         // given
         Member[] members = new Member[3];
         for(int i = 0; i < 3; ++i) {
-            members[i] = TestHelper.createTestMember(i);
+            members[i] = TestHelper.createMember(i);
             memberService.join(members[i]);
         }
         blockService.blockMember(members[0], members[1]);
         blockService.blockMember(members[0], members[2]);
 
         // when
-        List<Member> blockList = memberService.findMemberBlockList(members[0].getId());
+        List<Member> blockList = memberService.findMemberBlockList(members[0].getMember_no());
 
         // then
         assertEquals(2, blockList.size());
-        assertEquals(members[1].getId(), blockList.get(0).getId());
-        assertEquals(members[2].getId(), blockList.get(1).getId());
+        assertEquals(members[1].getMember_no(), blockList.get(0).getMember_no());
+        assertEquals(members[2].getMember_no(), blockList.get(1).getMember_no());
     }
     
     @Test
     public void findMemberBlockList_실패() {
-        NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findMemberBlockList(TestHelper.testId));
+        NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findMemberBlockList(-1L));
         assertEquals("회원 정보 찾지 못함", thrown.getMessage());
     }
 }

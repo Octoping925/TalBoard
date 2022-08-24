@@ -83,7 +83,7 @@ public class MemberController {
     @DeleteMapping("/members/resign")
     public ResponseEntity<Map<String, Object>> resign(MemberResignVO vo) {
         try {
-            memberService.resign(vo.getId(), vo.getResign_member_id());
+            memberService.resign(vo.getMember_no(), vo.getResign_member_no());
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "회원 탈퇴 성공"));
         }
@@ -141,7 +141,7 @@ public class MemberController {
     @PatchMapping("/members/accountInfo")
     public ResponseEntity<Map<String, Object>> changeAccountInfo(MemberDataChangeVO vo) {
         try {
-            Member member = memberRepository.findOneActualMemberById(vo.getId());
+            Member member = memberRepository.findOne(vo.getMember_no());
             memberService.updateMemberData(member, vo);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "변경 성공"));
@@ -166,7 +166,7 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> findBlockList(MemberFindBlockListVO vo) {
         List<MemberInfoVO> blockList;
         try {
-            Member member = memberRepository.findOneActualMemberById(vo.getId());
+            Member member = memberRepository.findOne(vo.getMember_no());
             blockList = member.getBlockList().stream()
                 .map(Block::getBlockedMember)
                 .map(MemberInfoVO::new)
@@ -189,8 +189,8 @@ public class MemberController {
     @PostMapping("/members/block")
     public ResponseEntity<Map<String, Object>> blockMember(MemberBlockVO vo) {
         try {
-            Member member = memberRepository.findOneActualMemberById(vo.getId());
-            Member blockMember = memberRepository.findOneActualMemberById(vo.getBlocked_member_id());
+            Member member = memberRepository.findOne(vo.getMember_no());
+            Member blockMember = memberRepository.findOne(vo.getBlocked_member_no());
             blockService.blockMember(member, blockMember);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "차단 성공"));
@@ -213,8 +213,8 @@ public class MemberController {
     @DeleteMapping("/members/block")
     public ResponseEntity<Map<String, Object>> unblockMember(MemberBlockVO vo) {
         try {
-            Member member = memberRepository.findOneActualMemberById(vo.getId());
-            Member blockMember = memberRepository.findOneActualMemberById(vo.getBlocked_member_id());
+            Member member = memberRepository.findOne(vo.getMember_no());
+            Member blockMember = memberRepository.findOne(vo.getBlocked_member_no());
 
             blockService.unblockMember(member, blockMember);
             return ResponseEntity.ok()

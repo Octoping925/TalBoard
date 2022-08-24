@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberFindBlockListVO {
-    @ApiModelProperty(value = "아이디", required = true)
-    String id;
+    @ApiModelProperty(value = "멤버 번호", required = true)
+    Long member_no;
 }

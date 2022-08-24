@@ -18,15 +18,15 @@ public class TestHelper {
     public static String failEmail2 = "test@";
     public static String failEmail3 = "@test.com";
 
-    public static Member createTestMember() {
+    public static Member createMember() {
         MemberJoinVO vo = new MemberJoinVO(testId, testPw, testEmail);
         return Member.regist(vo);
     }
-    public static Member createTestMember(int number) {
+    public static Member createMember(int number) {
         MemberJoinVO vo = new MemberJoinVO(testId + number, testPw + number, testEmail + number);
         return Member.regist(vo);
     }
-    public static Member createTestMember(String id, String password, String emailAddress) {
+    public static Member createMember(String id, String password, String emailAddress) {
         MemberJoinVO vo = new MemberJoinVO(id, password, emailAddress);
         return Member.regist(vo);
     }
