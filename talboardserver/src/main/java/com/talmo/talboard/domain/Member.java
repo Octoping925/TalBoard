@@ -65,8 +65,12 @@ public class Member {
         this.registDate = LocalDateTime.now();
     }
 
-    public boolean equals(Member member) {
-        return Objects.equals(this.member_no, member.getMember_no());
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Member) {
+            return Objects.equals(this.member_no, ((Member) obj).getMember_no());
+        }
+        return false;
     }
 
     private static boolean isValidId(String id) {
