@@ -23,7 +23,7 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/logout** [GET] : 로그아웃
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 로그아웃 성공
     + 404 - Not Found : 회원 정보 찾지 못함
@@ -40,8 +40,8 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/resign** [DELETE] : 회원탈퇴
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
-    + resign_member_id *(String, 필수)*   :  탈퇴시킬 사용자의 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
+    + resign_member_no *(int, 필수)*   :  탈퇴시킬 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 회원 탈퇴 성공
     + 403 - Forbidden : 회원 탈퇴 권한 없음
@@ -68,7 +68,7 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/accountInfo** [PATCH] : 계정 정보 변경
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
     + password *(String)*  :  로그인에 필요한 비밀번호입니다.
     + email_addr *(String)*  : 아이디와 비밀번호 찾기 시 이용할 수 있는 이메일 주소입니다.
   - 응답
@@ -79,7 +79,7 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/like** [GET] : 사용자가 추천한 글 목록 조회
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 조회 성공
     + 404 - Not Found : 회원 정보 찾지 못함
@@ -88,7 +88,7 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/like/{post_no}** [GET] : 사용자의 특정 게시글 추천 여부 조회
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 조회 성공
     + 404 - Not Found : 회원 정보 또는 게시글 정보 찾지 못함
@@ -97,7 +97,7 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/block** [GET] : 사용자가 차단한 사용자들의 정보 조회
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 조회 성공
     + 400 - Bad Request : 회원 정보 찾지 못함
@@ -106,8 +106,8 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/block** [POST] : 사용자 차단
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
-    + blocked_member_id  *(String, 필수)*  :  로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
+    + block_member_no *(int, 필수)*  : 차단할 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 차단 성공
     + 400 - Bad Request : 이미 차단 중인 회원
@@ -115,8 +115,8 @@ TalBoard의 사용자와 관련한 모든 API에 관련한 정보입니다.
 
 * **/members/block** [DELETE] : 사용자 차단 해제
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
-    + blocked_member_id  *(String, 필수)*  :  로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
+    + block_member_no *(int, 필수)*  : 차단할 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 차단 해제 성공
     + 400 - Bad Request : 차단하지 않은 회원
@@ -187,7 +187,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/{posts_no}/like** [POST] : 게시글 추천 / 비추천
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
     + like_status *(int, 필수)*  :  1은 추천, -1은 비추천, 0은 미반응을 의미합니다.
   - 응답
     + 200 - OK : 추천 성공
@@ -196,7 +196,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/{posts_no}/comment** [POST] : 댓글 작성
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
     + context *(String, 필수)*  :   댓글의 내용입니다.
     + emoticon *(int)*  :  댓글에 첨부할 이모티콘의 번호입니다.
     + parent_no *(int)*   :  해당 댓글이 답글일 경우 부모 댓글의 고유 번호입니다.
@@ -218,7 +218,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/{post_no}/comment** [PATCH] : 댓글 수정
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
     + context *(String, 필수)*  :   댓글의 내용입니다.
     + emoticon *(int)*  :  댓글에 첨부할 이모티콘의 번호입니다.
   - 응답
@@ -229,7 +229,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/{post_no}/comment** [DELETE] : 댓글 삭제
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
     + comment_no *(int, 필수)* : 댓글의 고유 번호입니다.
   - 응답
     + 200 - OK : 삭제 성공
@@ -238,7 +238,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/{post_no}/report** [POST] : 게시글 신고
   - 매개변수
-    + id *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + member_no *(int)* : 사용자의 고유한 멤버 번호입니다.
   - 응답
     + 200 - OK : 신고 성공
     + 404 - Not Found : 사용자 또는 게시글 번호 조회 실패
