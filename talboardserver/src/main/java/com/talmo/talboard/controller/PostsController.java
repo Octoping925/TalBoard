@@ -45,7 +45,7 @@ public class PostsController {
             @ApiResponse(code = 401, message = "Unauthorized : 수정 권한 없음"),
             @ApiResponse(code = 404, message = "Not Found : 게시글 수정 실패")
     })
-    @PatchMapping("/${post_no}")
+    @PatchMapping("/{post_no}")
     public List<Post> updatePost() {
         return null;
     }
@@ -56,7 +56,7 @@ public class PostsController {
             @ApiResponse(code = 401, message = "Unauthorized : 삭제 권한 없음"),
             @ApiResponse(code = 404, message = "Not Found : 게시글 삭제 실패")
     })
-    @DeleteMapping("/${post_no}")
+    @DeleteMapping("/{post_no}")
     public List<Post> deletePost() {
         return null;
     }
@@ -66,7 +66,7 @@ public class PostsController {
             @ApiResponse(code = 200, message = "OK : 게시글 추천/비추천 수 조회 성공"),
             @ApiResponse(code = 404, message = "Not Found : 게시글 추천/비추천 수 조회 실패")
     })
-    @GetMapping("/${post_no}/like")
+    @GetMapping("/{post_no}/like")
     public List<Post> getLikeAndDislike() {
         return null;
     }
@@ -77,7 +77,7 @@ public class PostsController {
             @ApiResponse(code = 400, message = "Bad Request : 데이터 유효성 검사 실패"),
             @ApiResponse(code = 404, message = "Not Found : 게시글 추천/비추천 실패")
     })
-    @PostMapping("/${post_no}/like")
+    @PostMapping("/{post_no}/like")
     public List<Post> setLikeAndDislike() {
         return null;
     }
@@ -88,7 +88,7 @@ public class PostsController {
             @ApiResponse(code = 400, message = "Bad Request : 데이터 유효성 검사 실패"),
             @ApiResponse(code = 404, message = "Not Found : 댓글 작성 실패")
     })
-    @PostMapping("/${post_no}/comment")
+    @PostMapping("/{post_no}/comment")
     public List<Post> setComment() {
         return null;
     }
@@ -98,7 +98,7 @@ public class PostsController {
             @ApiResponse(code = 200, message = "OK : 조회 성공"),
             @ApiResponse(code = 404, message = "Not Found : 댓글 조회 실패")
     })
-    @GetMapping("/${post_no}/comment")
+    @GetMapping("/{post_no}/comment")
     public List<Post> getComment() {
         return null;
     }
@@ -110,7 +110,7 @@ public class PostsController {
             @ApiResponse(code = 401, message = "Unauthorized : 수정 권한 없음"),
             @ApiResponse(code = 404, message = "Not Found : 댓글 수정 실패")
     })
-    @PatchMapping("/${post_no}/comment")
+    @PatchMapping("/{post_no}/comment")
     public List<Post> updateComment() {
         return null;
     }
@@ -121,7 +121,7 @@ public class PostsController {
             @ApiResponse(code = 401, message = "Unauthorized : 삭제 권한 없음"),
             @ApiResponse(code = 404, message = "Not Found : 댓글 삭제 실패")
     })
-    @DeleteMapping("/${post_no}/comment")
+    @DeleteMapping("/{post_no}/comment")
     public List<Post> deleteComment() {
         return null;
     }
@@ -131,7 +131,7 @@ public class PostsController {
             @ApiResponse(code = 200, message = "OK : 게시글 신고 성공"),
             @ApiResponse(code = 404, message = "Not Found : 사용자 또는 게시글 번호 조회 실패")
     })
-    @PostMapping("/${post_no}/report")
+    @PostMapping("/{post_no}/report")
     public List<Post> reportPost() {
         return null;
     }

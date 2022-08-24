@@ -6,6 +6,6 @@ import org.junit.jupiter.api.Test;
 public class PostTest {
     @Test
     public void createPost() {
-        Post post = TestHelper.c
+//        Post post = TestHelper.
     }
 }
