@@ -1,6 +1,7 @@
 package com.talmo.talboard.domain;
 
 import com.sun.istack.NotNull;
+import com.talmo.talboard.domain.vo.PostCreateVO;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class Post {
     private Long post_no;
 
     @NotNull
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
     private Member member;
 
@@ -29,11 +30,23 @@ public class Post {
     @NotNull
     private LocalDateTime create_date;
 
-    public Post(Member member, String title, String context, String delete_yn, LocalDateTime create_date) {
+    protected Post(String title, String context) {
+        this.title = title;
+        this.context = context;
+        this.delete_yn = "N";
+        this.create_date = LocalDateTime.now();
+    }
+
+    private Post(Member member, String title, String context, String delete_yn, LocalDateTime create_date) {
         this.member = member;
         this.title = title;
         this.context = context;
-        this.delete_yn = delete_yn;
-        this.create_date = create_date;
+        this.delete_yn = "N";
+        this.create_date = LocalDateTime.now();
     }
+
+    public static Post create(PostCreateVO vo) {
+        return new Post(vo.getTitle(), vo.getContext());
+    }
+
 }

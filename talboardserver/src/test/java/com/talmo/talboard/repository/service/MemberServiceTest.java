@@ -1,4 +1,4 @@
-package com.talmo.talboard.service;
+package com.talmo.talboard.repository.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,6 +9,9 @@ import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import java.util.List;
+
+import com.talmo.talboard.service.BlockService;
+import com.talmo.talboard.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 public class MemberServiceTest {
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
     @Autowired MemberRepository memberRepository;
-    @Autowired BlockService blockService;
+    @Autowired
+    BlockService blockService;
 
     @Test
     public void join() {
