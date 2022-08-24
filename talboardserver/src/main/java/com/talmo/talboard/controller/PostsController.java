@@ -1,8 +1,10 @@
 package com.talmo.talboard.controller;
 
 import com.talmo.talboard.config.ResponseObject;
+import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.PostCreateVO;
+import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +23,7 @@ import java.util.Map;
 public class PostsController {
     private final PostService postService;
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
 
     @ApiOperation(value="게시글 작성")
@@ -31,9 +34,10 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 정보를 찾지 못함")
     })
     @PostMapping("/posts/create")
-    public ResponseEntity<Map<String, Object>> creatPost(PostCreateVO vo) {
+    public ResponseEntity<Map<String, Object>> createPost(PostCreateVO vo) {
         try {
-            Post post = Post.create(vo);
+            Member member = memberRepository.findOne(vo.getMember_no());
+            Post post = Post.create(vo, member);
             Long post_no = postService.create(post);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(post_no, "게시글 등록 성공"));
