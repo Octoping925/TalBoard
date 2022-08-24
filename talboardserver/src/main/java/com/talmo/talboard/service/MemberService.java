@@ -8,7 +8,6 @@ import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.BlockRepository;
 import com.talmo.talboard.repository.MemberRepository;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -36,8 +35,8 @@ public class MemberService {
      * 아이디가 같거나 이메일이 같은 회원이 있는지 체크
      */
     private void chkDuplicateMember(Member member) {
-        if(!memberRepository.findActualMemberById(member.getId()).isEmpty()
-            || !memberRepository.findActualMemberByEmailAddress(member.getEmailAddress()).isEmpty()) {
+        if(memberRepository.chkExistsActualMemberById(member.getId())
+            || memberRepository.chkExistsActualMemberByEmailAddress(member.getEmailAddress())) {
             throw new IllegalStateException("이미 존재하는 아이디 또는 이메일");
         }
     }
@@ -46,9 +45,9 @@ public class MemberService {
      * 회원 탈퇴
      */
     @Transactional
-    public void resign(String id, String resign_member_id) throws NoMemberFoundException {
-        Member member = memberRepository.findOneActualMemberById(id);
-        Member resignMember = memberRepository.findOneActualMemberById(resign_member_id);
+    public void resign(Long id, Long resign_member_id) throws NoMemberFoundException {
+        Member member = memberRepository.findOne(id);
+        Member resignMember = memberRepository.findOne(resign_member_id);
 
         if(!member.equals(resignMember)
         && !member.isAdminYn()) {
@@ -85,7 +84,7 @@ public class MemberService {
             member.changePassword(vo.getPassword());
         }
         if(vo.getEmailAddress() != null) {
-            if(!memberRepository.findActualMemberByEmailAddress(vo.getEmailAddress()).isEmpty()) {
+            if(memberRepository.chkExistsActualMemberByEmailAddress(vo.getEmailAddress())) {
                 throw new IllegalStateException("이미 존재하는 이메일");
             }
             member.changeEmailAddress(vo.getEmailAddress());
@@ -95,8 +94,8 @@ public class MemberService {
     /**
      * 회원 차단 목록 조회
      */
-    public List<Member> findMemberBlockList(String id) throws NoMemberFoundException {
-        Member member = memberRepository.findOneActualMemberById(id);
+    public List<Member> findMemberBlockList(Long member_no) throws NoMemberFoundException {
+        Member member = memberRepository.findOne(member_no);
         return blockRepository.findMemberBlockList(member.getMember_no()).stream()
                 .map(Block::getBlockedMember)
                 .collect(Collectors.toList());

@@ -4,7 +4,6 @@ import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
-import com.talmo.talboard.repository.MemberRepository;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +26,9 @@ public class BlockServiceTest {
     @Test
     public void cleanMember() {
         // given
-        Member member1 = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
-        Member member3 = TestHelper.createTestMember(3);
+        Member member1 = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
+        Member member3 = TestHelper.createMember(3);
         memberService.join(member1);
         Long memberNo2 = memberService.join(member2);
         memberService.join(member3);
@@ -57,8 +56,8 @@ public class BlockServiceTest {
     @Test
     public void blockMember() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
 
@@ -72,8 +71,8 @@ public class BlockServiceTest {
     @Test
     public void blockMember_실패() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
         memberService.join(member);
         memberService.join(member2);
         blockService.blockMember(member, member2);
@@ -88,8 +87,8 @@ public class BlockServiceTest {
     @Test
     public void unblockMember() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
 
@@ -105,8 +104,8 @@ public class BlockServiceTest {
     @Test
     public void unblockMember_실패() {
         // given
-        Member member = TestHelper.createTestMember(1);
-        Member member2 = TestHelper.createTestMember(2);
+        Member member = TestHelper.createMember(1);
+        Member member2 = TestHelper.createMember(2);
         memberService.join(member);
         memberService.join(member2);
 

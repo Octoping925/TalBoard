@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class MemberResignVO {
     @ApiModelProperty(value = "아이디", required = true)
-    String id;
+    Long member_no;
     @ApiModelProperty(value = "탈퇴시킬 계정의 아이디", required = true)
-    String resign_member_id;
+    Long resign_member_no;
 }

@@ -4,7 +4,6 @@ import com.sun.istack.NotNull;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -58,12 +57,6 @@ public class Member {
     }
 
     private Member(String id, String password, String emailAddress) {
-        if(!isValidId(id)
-        || !isValidPassword(password)
-        || !isValidEmailAddress(emailAddress)) {
-            throw new IllegalArgumentException("아이디, 비밀번호 유효성 검사 실패");
-        }
-
         this.id = id;
         this.password = password;
         this.emailAddress = emailAddress;
@@ -76,17 +69,17 @@ public class Member {
         return Objects.equals(this.member_no, member.getMember_no());
     }
 
-    private boolean isValidId(String id) {
+    private static boolean isValidId(String id) {
         if(id.contains(" ")) return false;
         if(id.length() < 6) return false;
         return true;
     }
 
-    private boolean isValidPassword(String password) {
+    private static boolean isValidPassword(String password) {
         return password.length() >= 6 && !password.contains(" ");
     }
 
-    private boolean isValidEmailAddress(String emailAddress) {
+    private static boolean isValidEmailAddress(String emailAddress) {
         String regx = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(regx);
         Matcher matcher = pattern.matcher(emailAddress);
@@ -95,6 +88,12 @@ public class Member {
 
     //==비즈니스 로직==//
     public static Member regist(MemberJoinVO vo) {
+        if(!isValidId(vo.getId())
+            || !isValidPassword(vo.getPassword())
+            || !isValidEmailAddress(vo.getEmailAddress())) {
+            throw new IllegalArgumentException("아이디, 비밀번호 유효성 검사 실패");
+        }
+
         return new Member(vo.getId(), vo.getPassword(), vo.getEmailAddress());
     }
 
@@ -129,7 +128,7 @@ public class Member {
     }
 
     public void cleanBlockList() {
-        this.blockList = new ArrayList<>();
+        this.blockList.clear();
     }
 
 }

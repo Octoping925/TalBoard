@@ -23,7 +23,9 @@ public class MemberRepository {
     }
 
     public Member findOne(Long memberNo) {
-        return em.find(Member.class, memberNo);
+        Member member = em.find(Member.class, memberNo);
+        if(member == null) throw new NoMemberFoundException();
+        return member;
     }
 
     public List<Member> findById(String id) {
@@ -58,6 +60,20 @@ public class MemberRepository {
             throw new NoMemberFoundException();
         }
         return actualMember.get(0);
+    }
+
+    public boolean chkExistsActualMemberById(String id) {
+        return em.createQuery("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END "
+                + "FROM Member m WHERE m.id = :id AND m.resignYn = false", Boolean.class)
+            .setParameter("id", id)
+            .getSingleResult();
+    }
+
+    public boolean chkExistsActualMemberByEmailAddress(String emailAddress) {
+        return em.createQuery("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END "
+                + "FROM Member m WHERE m.emailAddress = :emailAddress AND m.resignYn = false", Boolean.class)
+            .setParameter("emailAddress", emailAddress)
+            .getSingleResult();
     }
 
 }

@@ -9,7 +9,7 @@ public class MemberTest {
     @Test
     public void changePassword() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
 
         // when
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> member.changePassword(
@@ -27,7 +27,7 @@ public class MemberTest {
     @Test
     public void changeEmailAddress() {
         // given
-        Member member = TestHelper.createTestMember();
+        Member member = TestHelper.createMember();
 
         // when
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> member.changeEmailAddress(TestHelper.failEmail));
