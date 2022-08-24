@@ -29,7 +29,6 @@ public class BlockService {
      */
     @Transactional
     public void blockMember(Member member, Member blockMember) {
-
         boolean isAlreadyBlocked = member.isBlockMember(blockMember);
         if(isAlreadyBlocked) {
             throw new IllegalStateException("이미 차단 중인 회원");

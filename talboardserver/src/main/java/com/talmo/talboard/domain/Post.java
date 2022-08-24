@@ -30,6 +30,10 @@ public class Post {
     @NotNull
     private LocalDateTime create_date;
 
+    protected Post() {
+
+    }
+
     private Post(Member member, String title, String context) {
         this.member = member;
         this.title = title;
@@ -37,6 +41,7 @@ public class Post {
         this.delete_yn = "N";
         this.create_date = LocalDateTime.now();
     }
+
 
     public static Post create(PostCreateVO vo, Member member) {
         return new Post(member, vo.getTitle(), vo.getContext());
