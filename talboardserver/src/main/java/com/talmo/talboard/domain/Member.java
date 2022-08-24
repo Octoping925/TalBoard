@@ -38,8 +38,8 @@ public class Member {
     @NotNull
     private LocalDateTime registDate;
 
-//    @OneToMany(mappedBy = "member")
-//    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "blockId.member")
     private List<Block> blockList = new ArrayList<>();

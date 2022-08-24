@@ -3,6 +3,7 @@ package com.talmo.talboard.controller;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
+import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
@@ -228,5 +229,30 @@ public class MemberController {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
+
+    @ApiOperation(value="사용자 작성 게시글 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "조회 성공"),
+    })
+    @GetMapping("/members/posts")
+    public ResponseEntity<Map<String, Object>> getMemberPostList(MemberNoVO vo) {
+        try {
+            Member member = memberRepository.findOne(vo.getMember_no());
+            List<Post> postList = member.getPosts();
+
+            List<PostInfoVO> postListVO = postList.stream()
+                .map(post -> new PostInfoVO(member.getMember_no(), post))
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok()
+                .body(ResponseObject.create(postListVO, "조회 성공"));
+        }
+        catch(NoMemberFoundException e) {
+            return ResponseEntity.ok()
+                .body(ResponseObject.create(new ArrayList<>(), "조회 성공"));
+        }
+    }
+
+
 
 }

@@ -44,7 +44,9 @@ public class Post {
 
 
     public static Post create(PostCreateVO vo, Member member) {
-        return new Post(member, vo.getTitle(), vo.getContext());
+        Post post = new Post(member, vo.getTitle(), vo.getContext());
+        member.getPosts().add(post);
+        return post;
     }
 
 }
