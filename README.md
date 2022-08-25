@@ -29,9 +29,9 @@ GIF Images
 
 ## 기술 스택
 
-| TypeScript |  React   |  Spring Boot  |  MySQL   |
-| :--------: | :------: | :-----------: | :------: |
-|   ![ts]    | ![react] |   ![spring]   | ![mysql] |
+| TypeScript |  React   |  Spring Boot  |  Hibernate  |   MySQL  |
+| :--------: | :------: | :-----------: | :----------:| :------: |
+|   ![ts]    | ![react] |   ![spring]   | ![hibernate]| ![mysql] |
 
 <br>
 
@@ -56,4 +56,5 @@ MIT &copy; [NoHack](mailto:lbjp114@gmail.com)
 [ts]: /images/stack/typescript.svg
 [react]: /images/stack/react.svg
 [spring]: /images/stack/spring.svg
+[hibernate]: /images/stack/hibernate.svg
 [mysql]: /images/stack/mysql.svg
