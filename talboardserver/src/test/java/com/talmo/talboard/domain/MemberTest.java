@@ -3,6 +3,7 @@ package com.talmo.talboard.domain;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.talmo.talboard.config.TestHelper;
+import com.talmo.talboard.exception.ExceptionConstants;
 import org.junit.jupiter.api.Test;
 
 public class MemberTest {
@@ -19,8 +20,8 @@ public class MemberTest {
         member.changePassword(TestHelper.testPw2);
 
         // then
-        assertEquals("비밀번호 유효성 검사 실패", thrown.getMessage());
-        assertEquals("비밀번호 유효성 검사 실패", thrown2.getMessage());
+        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, thrown.getMessage());
+        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, thrown2.getMessage());
         assertEquals(TestHelper.testPw2, member.getPassword());
     }
 
@@ -36,9 +37,9 @@ public class MemberTest {
         member.changeEmailAddress(TestHelper.testEmail2);
 
         // then
-        assertEquals("이메일 유효성 검사 실패", thrown.getMessage());
-        assertEquals("이메일 유효성 검사 실패", thrown2.getMessage());
-        assertEquals("이메일 유효성 검사 실패", thrown3.getMessage());
+        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, thrown.getMessage());
+        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, thrown2.getMessage());
+        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, thrown3.getMessage());
 
         assertEquals(TestHelper.testEmail2, member.getEmailAddress());
     }

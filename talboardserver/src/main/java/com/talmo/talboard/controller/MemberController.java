@@ -184,7 +184,6 @@ public class MemberController {
     @ApiOperation(value="사용자 차단")
     @ApiResponses({
             @ApiResponse(code = 200, message = "차단 성공"),
-            @ApiResponse(code = 400, message = "이미 차단 중인 회원"),
             @ApiResponse(code = 404, message = "회원 정보 찾지 못함"),
     })
     @PostMapping("/members/block")
@@ -196,10 +195,6 @@ public class MemberController {
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "차단 성공"));
         }
-        catch(IllegalStateException e) {
-            return ResponseEntity.badRequest()
-                    .body(ResponseObject.create(null, e.getMessage()));
-        }
         catch(NoMemberFoundException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -208,7 +203,6 @@ public class MemberController {
     @ApiOperation(value="사용자 차단 해제")
     @ApiResponses({
             @ApiResponse(code = 200, message = "차단 해제 성공"),
-            @ApiResponse(code = 400, message = "차단하지 않은 회원"),
             @ApiResponse(code = 404, message = "회원 정보 찾지 못함"),
     })
     @DeleteMapping("/members/block")
@@ -220,10 +214,6 @@ public class MemberController {
             blockService.unblockMember(member, blockMember);
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, "차단 해제 성공"));
-        }
-        catch(IllegalStateException e) {
-            return ResponseEntity.badRequest()
-                    .body(ResponseObject.create(null, e.getMessage()));
         }
         catch(NoMemberFoundException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);

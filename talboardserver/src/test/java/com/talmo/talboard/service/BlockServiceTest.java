@@ -69,7 +69,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void blockMember_실패() {
+    public void blockMember_중복차단() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -78,10 +78,11 @@ public class BlockServiceTest {
         blockService.blockMember(member, member2);
 
         // when
-        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> blockService.blockMember(member, member2));
+        blockService.blockMember(member, member2);
 
         // then
-        assertEquals("이미 차단 중인 회원", thrown.getMessage());
+        assertEquals(1, member.getBlockList().size());
+        assertEquals(member2, member.getBlockList().get(0).getBlockedMember());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void unblockMember_실패() {
+    public void unblockMember_중복해제() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -110,9 +111,9 @@ public class BlockServiceTest {
         memberService.join(member2);
 
         // when
-        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> blockService.unblockMember(member, member2));
+        blockService.unblockMember(member, member2);
 
         // then
-        assertEquals("차단하지 않은 회원", thrown.getMessage());
+        assertEquals(0, member.getBlockList().size());
     }
 }

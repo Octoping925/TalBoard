@@ -3,6 +3,7 @@ package com.talmo.talboard.service;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
+import com.talmo.talboard.exception.ExceptionConstants;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.BlockRepository;
@@ -35,9 +36,11 @@ public class MemberService {
      * 아이디가 같거나 이메일이 같은 회원이 있는지 체크
      */
     private void chkDuplicateMember(Member member) {
-        if(memberRepository.chkExistsActualMemberById(member.getId())
-            || memberRepository.chkExistsActualMemberByEmailAddress(member.getEmailAddress())) {
-            throw new IllegalStateException("이미 존재하는 아이디 또는 이메일");
+        if(memberRepository.chkExistsActualMemberById(member.getId())) {
+            throw new IllegalStateException(ExceptionConstants.DUPLICATE_ID_MESSAGE);
+        }
+        if(memberRepository.chkExistsActualMemberByEmailAddress(member.getEmailAddress())) {
+            throw new IllegalStateException(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE);
         }
     }
 
@@ -51,7 +54,7 @@ public class MemberService {
 
         if(!member.equals(resignMember)
         && !member.isAdminYn()) {
-            throw new NoAuthorizationException("회원 탈퇴");
+            throw new NoAuthorizationException();
         }
 
         blockService.cleanMember(resignMember);
@@ -85,7 +88,7 @@ public class MemberService {
         }
         if(vo.getEmailAddress() != null) {
             if(memberRepository.chkExistsActualMemberByEmailAddress(vo.getEmailAddress())) {
-                throw new IllegalStateException("이미 존재하는 이메일");
+                throw new IllegalStateException(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE);
             }
             member.changeEmailAddress(vo.getEmailAddress());
         }

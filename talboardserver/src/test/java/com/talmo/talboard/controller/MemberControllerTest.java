@@ -64,27 +64,27 @@ public class MemberControllerTest {
     public void getMemberPostList() {
         // given
         Member member = TestHelper.createMember();
-        Post post = TestHelper.createPost(member, 3, 5);
-        Post post2 = TestHelper.createPost(member, 5, 8);
+        Post post = TestHelper.createPost(member);
+        Post post2 = TestHelper.createPost(member, 3, 5);
 
         memberService.join(member);
         postRepository.save(post);
         postRepository.save(post2);
 
-        // when
         MemberNoVO vo = new MemberNoVO();
         vo.setMember_no(member.getMember_no());
-        ResponseEntity<Map<String, Object>> postList = memberController.getMemberPostList(vo);
+
+        // when
+        Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
+        List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
+        String message = (String) body.get("message");
 
         // then
-        List<PostInfoVO> data = (List<PostInfoVO>) postList.getBody().get("data");
-        String message = (String) postList.getBody().get("message");
-
-        assertEquals(2, data.size());
-        assertEquals(data.get(0).getPost_no(), post.getPost_no());
-        assertEquals(data.get(0).getTitle(), post.getTitle());
-        assertEquals(data.get(1).getPost_no(), post2.getPost_no());
-        assertEquals(data.get(1).getTitle(), post2.getTitle());
+        assertEquals(2, postList.size());
+        assertEquals(postList.get(0).getPost_no(), post.getPost_no());
+        assertEquals(postList.get(0).getTitle(), post.getTitle());
+        assertEquals(postList.get(1).getPost_no(), post2.getPost_no());
+        assertEquals(postList.get(1).getTitle(), post2.getTitle());
         assertEquals("조회 성공", message);
     }
 }

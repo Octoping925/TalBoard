@@ -1,10 +1,11 @@
-package com.talmo.talboard.repository.service;
+package com.talmo.talboard.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
+import com.talmo.talboard.exception.ExceptionConstants;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
@@ -55,7 +56,7 @@ public class MemberServiceTest {
 
         // then
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
-        assertEquals("이미 존재하는 아이디 또는 이메일", thrown.getMessage());
+        assertEquals(ExceptionConstants.DUPLICATE_ID_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -92,9 +93,9 @@ public class MemberServiceTest {
         NoMemberFoundException thrown3 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(-1L, member.getMember_no()));
 
         // then
-        assertEquals("회원 탈퇴권한 없음", thrown.getMessage());
-        assertEquals("회원 정보 찾지 못함", thrown2.getMessage());
-        assertEquals("회원 정보 찾지 못함", thrown3.getMessage());
+        assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, thrown.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown2.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown3.getMessage());
     }
 
     @Test
@@ -113,7 +114,7 @@ public class MemberServiceTest {
     @Test
     public void findId_실패() {
         NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findId("cant@exist.com"));
-        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -132,7 +133,7 @@ public class MemberServiceTest {
     @Test
     public void findPassword_실패() {
         NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findPassword("cantexist"));
-        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -166,7 +167,7 @@ public class MemberServiceTest {
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(member, vo));
 
         // then
-        assertEquals("이미 존재하는 이메일", thrown.getMessage());
+        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -192,6 +193,6 @@ public class MemberServiceTest {
     @Test
     public void findMemberBlockList_실패() {
         NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findMemberBlockList(-1L));
-        assertEquals("회원 정보 찾지 못함", thrown.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown.getMessage());
     }
 }

@@ -30,12 +30,10 @@ public class BlockService {
     @Transactional
     public void blockMember(Member member, Member blockMember) {
         boolean isAlreadyBlocked = member.isBlockMember(blockMember);
-        if(isAlreadyBlocked) {
-            throw new IllegalStateException("이미 차단 중인 회원");
+        if(!isAlreadyBlocked) {
+            Block block = Block.createBlock(member, blockMember);
+            blockRepository.save(block);
         }
-
-        Block block = Block.createBlock(member, blockMember);
-        blockRepository.save(block);
     }
 
     /**
@@ -45,17 +43,15 @@ public class BlockService {
     public void unblockMember(Member member, Member blockMember) {
         boolean isAlreadyBlocked = member.isBlockMember(blockMember);
 
-        if(!isAlreadyBlocked) {
-            throw new IllegalStateException("차단하지 않은 회원");
-        }
-
-        List<Block> blockList = member.getBlockList();
-        for(int i = 0; i < blockList.size(); ++i) {
-            Block block = blockList.get(i);
-            if (blockMember.equals(block.getBlockedMember())) {
-                blockRepository.delete(block);
-                blockList.remove(i);
-                return;
+        if(isAlreadyBlocked) {
+            List<Block> blockList = member.getBlockList();
+            for(int i = 0; i < blockList.size(); ++i) {
+                Block block = blockList.get(i);
+                if (blockMember.equals(block.getBlockedMember())) {
+                    blockRepository.delete(block);
+                    blockList.remove(i);
+                    return;
+                }
             }
         }
     }
