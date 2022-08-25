@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 public class Post {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long post_no;
 
     @NotNull
