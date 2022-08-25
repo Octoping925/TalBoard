@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,13 +19,7 @@ public class Member {
     private Long member_no;
 
     @NotNull
-    private String id;
-
-    @NotNull
-    private String password;
-
-    @NotNull
-    private String emailAddress;
+    private LoginInfo loginInfo;
 
     @NotNull
     private boolean adminYn;
@@ -56,10 +48,8 @@ public class Member {
         this.registDate = LocalDateTime.now();
     }
 
-    private Member(String id, String password, String emailAddress) {
-        this.id = id;
-        this.password = password;
-        this.emailAddress = emailAddress;
+    private Member(String id, String password, String emailAddress) throws IllegalArgumentException {
+        this.loginInfo = new LoginInfo(id, password, emailAddress);
         this.adminYn = false;
         this.resignYn = false;
         this.registDate = LocalDateTime.now();
@@ -73,31 +63,20 @@ public class Member {
         return false;
     }
 
-    private static boolean isValidId(String id) {
-        if(id.contains(" ")) return false;
-        if(id.length() < 6) return false;
-        return true;
+    public String getId() {
+        return this.loginInfo.getId();
     }
 
-    private static boolean isValidPassword(String password) {
-        return password.length() >= 6 && !password.contains(" ");
+    public String getPassword() {
+        return this.loginInfo.getPassword();
     }
 
-    private static boolean isValidEmailAddress(String emailAddress) {
-        String regx = "^(.+)@(.+)$";
-        Pattern pattern = Pattern.compile(regx);
-        Matcher matcher = pattern.matcher(emailAddress);
-        return matcher.matches();
+    public String getEmailAddress() {
+        return this.loginInfo.getEmailAddress();
     }
 
     //==비즈니스 로직==//
-    public static Member regist(MemberJoinVO vo) {
-        if(!isValidId(vo.getId())
-            || !isValidPassword(vo.getPassword())
-            || !isValidEmailAddress(vo.getEmailAddress())) {
-            throw new IllegalArgumentException("아이디, 비밀번호 유효성 검사 실패");
-        }
-
+    public static Member regist(MemberJoinVO vo) throws IllegalArgumentException {
         return new Member(vo.getId(), vo.getPassword(), vo.getEmailAddress());
     }
 
@@ -106,18 +85,12 @@ public class Member {
         this.adminYn = false;
     }
 
-    public void changePassword(String password) {
-        if(!isValidPassword(password)) {
-            throw new IllegalArgumentException("비밀번호 유효성 검사 실패");
-        }
-        this.password = password;
+    public void changePassword(String password) throws IllegalArgumentException {
+        this.loginInfo = new LoginInfo(this.getId(), password, this.getEmailAddress());
     }
 
-    public void changeEmailAddress(String emailAddress) {
-        if(!isValidEmailAddress(emailAddress)) {
-            throw new IllegalArgumentException("이메일 유효성 검사 실패");
-        }
-        this.emailAddress = emailAddress;
+    public void changeEmailAddress(String emailAddress) throws IllegalArgumentException {
+        this.loginInfo = new LoginInfo(this.getId(), this.getPassword(), emailAddress);
     }
 
     public void setAdminYn(boolean status) {

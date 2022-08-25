@@ -29,13 +29,13 @@ public class MemberRepository {
     }
 
     public List<Member> findById(String id) {
-        return em.createQuery("SELECT m FROM Member m WHERE m.id = :id", Member.class)
+        return em.createQuery("SELECT m FROM Member m WHERE m.loginInfo.id = :id", Member.class)
             .setParameter("id", id)
             .getResultList();
     }
 
     public List<Member> findActualMemberById(String id) {
-        return em.createQuery("SELECT m FROM Member m WHERE m.id = :id AND m.resignYn = false", Member.class)
+        return em.createQuery("SELECT m FROM Member m WHERE m.loginInfo.id = :id AND m.resignYn = false", Member.class)
             .setParameter("id", id)
             .getResultList();
     }
@@ -49,7 +49,7 @@ public class MemberRepository {
     }
 
     public List<Member> findActualMemberByEmailAddress(String emailAddress) {
-        return em.createQuery("SELECT m FROM Member m WHERE m.emailAddress = :emailAddress AND m.resignYn = false", Member.class)
+        return em.createQuery("SELECT m FROM Member m WHERE m.loginInfo.emailAddress = :emailAddress AND m.resignYn = false", Member.class)
             .setParameter("emailAddress", emailAddress)
             .getResultList();
     }
@@ -64,14 +64,14 @@ public class MemberRepository {
 
     public boolean chkExistsActualMemberById(String id) {
         return em.createQuery("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END "
-                + "FROM Member m WHERE m.id = :id AND m.resignYn = false", Boolean.class)
+                + "FROM Member m WHERE m.loginInfo.id = :id AND m.resignYn = false", Boolean.class)
             .setParameter("id", id)
             .getSingleResult();
     }
 
     public boolean chkExistsActualMemberByEmailAddress(String emailAddress) {
         return em.createQuery("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END "
-                + "FROM Member m WHERE m.emailAddress = :emailAddress AND m.resignYn = false", Boolean.class)
+                + "FROM Member m WHERE m.loginInfo.emailAddress = :emailAddress AND m.resignYn = false", Boolean.class)
             .setParameter("emailAddress", emailAddress)
             .getSingleResult();
     }
