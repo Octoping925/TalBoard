@@ -14,6 +14,7 @@ public class TestHelper {
     public static String testEmail2 = "test2@test.com";
     public static String testEmail3 = "test3@test.com";
 
+    public static String failId = "id";
     public static String failPw = "pw";
     public static String failPw2 = "pwpwpw pw";
     public static String failEmail = "test";
@@ -31,14 +32,22 @@ public class TestHelper {
         return loremIpsumKor.substring(0, length);
     }
 
+    public static MemberJoinVO createMemberJoinVO() {
+        return new MemberJoinVO(testId, testPw, testEmail);
+    }
+
+    public static MemberJoinVO createMemberJoinVO(int number) {
+        return new MemberJoinVO(testId + number, testPw + number, testEmail + number);
+    }
+
     public static Member createMember() {
-        MemberJoinVO vo = new MemberJoinVO(testId, testPw, testEmail);
-        return Member.regist(vo);
+        return Member.regist(createMemberJoinVO());
     }
+
     public static Member createMember(int number) {
-        MemberJoinVO vo = new MemberJoinVO(testId + number, testPw + number, testEmail + number);
-        return Member.regist(vo);
+        return Member.regist(createMemberJoinVO(number));
     }
+
     public static Member createMember(String id, String password, String emailAddress) {
         MemberJoinVO vo = new MemberJoinVO(id, password, emailAddress);
         return Member.regist(vo);
