@@ -1,8 +1,10 @@
 package com.talmo.talboard.controller;
 
+import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
+import com.talmo.talboard.domain.vo.ListPostVO;
 import com.talmo.talboard.domain.vo.PostCreateVO;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
@@ -15,8 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,11 +57,15 @@ public class PostsController {
     @ApiOperation(value="전체 게시글 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK : 전체 게시글 조회 성공"),
-            @ApiResponse(code = 404, message = "Not Found : 전체 게시글 조회 실패")
     })
     @GetMapping("/posts")
-    public List<Post> getAllPosts() {
-        return null;
+    public ResponseEntity<Map<String, Object>> getAllPosts() {
+        List<Post> post = postRepository.findAll();
+        List<ListPostVO> listPostVO = post.stream().map(ListPostVO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(ResponseObject.create(listPostVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
     }
     
     @ApiOperation(value="게시글 상세 조회")

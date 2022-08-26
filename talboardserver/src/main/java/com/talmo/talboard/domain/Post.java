@@ -42,7 +42,6 @@ public class Post {
         this.create_date = LocalDateTime.now();
     }
 
-
     public static Post create(PostCreateVO vo, Member member) {
         Post post = new Post(member, vo.getTitle(), vo.getContext());
         member.getPosts().add(post);
