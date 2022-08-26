@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class BlockServiceTest {
+class BlockServiceTest {
     @Autowired BlockService blockService;
     @Autowired BlockRepository blockRepository;
     @Autowired MemberService memberService;
 
     @Test
-    public void cleanMember() {
+    void cleanMember() {
         // given
         Member member1 = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -44,7 +44,7 @@ public class BlockServiceTest {
 //        assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
         assertTrue(member1.getBlockList().stream()
                 .map(Block::getBlockedMember)
-                .map(Member::getMember_no)
+                .map(Member::getMemberNo)
                 .noneMatch(memberNo -> Objects.equals(memberNo, memberNo2)));
 
         assertTrue(blockRepository.findMemberBlockedList(memberNo2).isEmpty());
@@ -54,7 +54,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void blockMember() {
+    void blockMember() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -69,7 +69,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void blockMember_중복차단() {
+    void blockMember_중복차단() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -86,7 +86,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void unblockMember() {
+    void unblockMember() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -103,7 +103,7 @@ public class BlockServiceTest {
     }
 
     @Test
-    public void unblockMember_중복해제() {
+    void unblockMember_중복해제() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);

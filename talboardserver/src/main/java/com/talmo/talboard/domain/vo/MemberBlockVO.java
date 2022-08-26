@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class MemberBlockVO {
     @ApiModelProperty(value = "멤버 번호", required = true)
-    Long member_no;
+    Long memberNo;
     @ApiModelProperty(value = "차단 유저 멤버 번호", required = true)
-    Long blocked_member_no;
+    Long blockedMemberNo;
 }

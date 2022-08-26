@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class PostCreateVO {
     @ApiModelProperty(value="작성자", required = true)
-    Long member_no;
+    Long memberNo;
 
     @ApiModelProperty(value="글 제목", required = true)
     String title;

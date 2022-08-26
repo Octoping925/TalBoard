@@ -3,7 +3,7 @@ package com.talmo.talboard.service;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
-import com.talmo.talboard.exception.ExceptionConstants;
+import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.BlockRepository;
@@ -29,7 +29,7 @@ public class MemberService {
     public Long join(Member member) {
         chkDuplicateMember(member);
         memberRepository.save(member);
-        return member.getMember_no();
+        return member.getMemberNo();
     }
 
     /**
@@ -48,9 +48,9 @@ public class MemberService {
      * 회원 탈퇴
      */
     @Transactional
-    public void resign(Long id, Long resign_member_id) throws NoMemberFoundException {
-        Member member = memberRepository.findOne(id);
-        Member resignMember = memberRepository.findOne(resign_member_id);
+    public void resign(Long memberNo, Long resignMemberNo) throws NoMemberFoundException {
+        Member member = memberRepository.findOne(memberNo);
+        Member resignMember = memberRepository.findOne(resignMemberNo);
 
         if(!member.equals(resignMember)
         && !member.isAdminYn()) {
@@ -97,9 +97,9 @@ public class MemberService {
     /**
      * 회원 차단 목록 조회
      */
-    public List<Member> findMemberBlockList(Long member_no) throws NoMemberFoundException {
-        Member member = memberRepository.findOne(member_no);
-        return blockRepository.findMemberBlockList(member.getMember_no()).stream()
+    public List<Member> findMemberBlockList(Long memberNo) throws NoMemberFoundException {
+        Member member = memberRepository.findOne(memberNo);
+        return blockRepository.findMemberBlockList(member.getMemberNo()).stream()
                 .map(Block::getBlockedMember)
                 .collect(Collectors.toList());
     }

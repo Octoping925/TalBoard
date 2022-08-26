@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class MemberDataChangeVO {
     @ApiModelProperty(value = "멤버 번호", required = true)
-    Long member_no;
+    Long memberNo;
     @ApiModelProperty(value = "비밀번호")
     String password;
     @ApiModelProperty(value = "이메일 주소")

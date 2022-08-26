@@ -3,12 +3,12 @@ package com.talmo.talboard.domain;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.talmo.talboard.config.TestHelper;
-import com.talmo.talboard.exception.ExceptionConstants;
+import com.talmo.talboard.config.ExceptionConstants;
 import org.junit.jupiter.api.Test;
 
-public class MemberTest {
+class MemberTest {
     @Test
-    public void changePassword() {
+    void changePassword() {
         // given
         Member member = TestHelper.createMember();
 
@@ -26,7 +26,7 @@ public class MemberTest {
     }
 
     @Test
-    public void changeEmailAddress() {
+    void changeEmailAddress() {
         // given
         Member member = TestHelper.createMember();
 

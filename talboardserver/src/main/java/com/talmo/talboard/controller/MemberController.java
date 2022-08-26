@@ -1,5 +1,6 @@
 package com.talmo.talboard.controller;
 
+import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
@@ -62,9 +63,9 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> join(MemberJoinVO vo) {
         try {
             Member member = Member.regist(vo);
-            Long member_no = memberService.join(member);
+            Long memberNo = memberService.join(member);
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(member_no, "회원 가입 성공"));
+                    .body(ResponseObject.create(memberNo, ResponseConstants.REGIST_SUCCESS_MESSAGE));
         }
         catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -84,9 +85,9 @@ public class MemberController {
     @DeleteMapping("/members/resign")
     public ResponseEntity<Map<String, Object>> resign(MemberResignVO vo) {
         try {
-            memberService.resign(vo.getMember_no(), vo.getResign_member_no());
+            memberService.resign(vo.getMemberNo(), vo.getResignMemberNo());
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(null, "회원 탈퇴 성공"));
+                    .body(ResponseObject.create(null, ResponseConstants.RESIGN_SUCCESS_MESSAGE));
         }
         catch(NoAuthorizationException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.FORBIDDEN);
@@ -106,7 +107,7 @@ public class MemberController {
         try {
             String id = memberService.findId(vo.getEmailAddress());
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(id, "아이디 찾기 성공"));
+                    .body(ResponseObject.create(id, ResponseConstants.FINDID_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return ResponseEntity.badRequest()
@@ -124,7 +125,7 @@ public class MemberController {
         try {
             String id = memberService.findPassword(vo.getId());
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(id, "비밀번호 찾기 성공"));
+                    .body(ResponseObject.create(id, ResponseConstants.FINDPW_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return ResponseEntity.badRequest()
@@ -142,10 +143,10 @@ public class MemberController {
     @PatchMapping("/members/accountInfo")
     public ResponseEntity<Map<String, Object>> changeAccountInfo(MemberDataChangeVO vo) {
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
             memberService.updateMemberData(member, vo);
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(null, "변경 성공"));
+                    .body(ResponseObject.create(null, ResponseConstants.CHANGE_SUCCESS_MESSAGE));
         }
         catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -167,7 +168,7 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> findBlockList(MemberFindBlockListVO vo) {
         List<MemberInfoVO> blockList;
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
             blockList = member.getBlockList().stream()
                 .map(Block::getBlockedMember)
                 .map(MemberInfoVO::new)
@@ -178,7 +179,7 @@ public class MemberController {
         }
 
         return ResponseEntity.ok()
-            .body(ResponseObject.create(blockList, "조회 성공"));
+            .body(ResponseObject.create(blockList, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
     }
 
     @ApiOperation(value="사용자 차단")
@@ -189,11 +190,11 @@ public class MemberController {
     @PostMapping("/members/block")
     public ResponseEntity<Map<String, Object>> blockMember(MemberBlockVO vo) {
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
-            Member blockMember = memberRepository.findOne(vo.getBlocked_member_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
+            Member blockMember = memberRepository.findOne(vo.getBlockedMemberNo());
             blockService.blockMember(member, blockMember);
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(null, "차단 성공"));
+                    .body(ResponseObject.create(null, ResponseConstants.BLOCK_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
@@ -208,12 +209,12 @@ public class MemberController {
     @DeleteMapping("/members/block")
     public ResponseEntity<Map<String, Object>> unblockMember(MemberBlockVO vo) {
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
-            Member blockMember = memberRepository.findOne(vo.getBlocked_member_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
+            Member blockMember = memberRepository.findOne(vo.getBlockedMemberNo());
 
             blockService.unblockMember(member, blockMember);
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(null, "차단 해제 성공"));
+                    .body(ResponseObject.create(null, ResponseConstants.UNBLOCK_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
@@ -227,19 +228,19 @@ public class MemberController {
     @GetMapping("/members/posts")
     public ResponseEntity<Map<String, Object>> getMemberPostList(MemberNoVO vo) {
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
             List<Post> postList = member.getPosts();
 
             List<PostInfoVO> postListVO = postList.stream()
-                .map(post -> new PostInfoVO(member.getMember_no(), post))
+                .map(post -> new PostInfoVO(member.getMemberNo(), post))
                 .collect(Collectors.toList());
 
             return ResponseEntity.ok()
-                .body(ResponseObject.create(postListVO, "조회 성공"));
+                .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return ResponseEntity.ok()
-                .body(ResponseObject.create(new ArrayList<>(), "조회 성공"));
+                .body(ResponseObject.create(new ArrayList<>(), ResponseConstants.SEARCH_SUCCESS_MESSAGE));
         }
     }
 

@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class MemberNoVO {
     @ApiModelProperty(value = "멤버 번호", required = true)
-    Long member_no;
+    Long memberNo;
 }

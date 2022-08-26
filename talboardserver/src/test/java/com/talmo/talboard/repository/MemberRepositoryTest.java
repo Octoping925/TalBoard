@@ -16,11 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class MemberRepositoryTest {
+class MemberRepositoryTest {
     @Autowired MemberRepository memberRepository;
 
     @Test
-    public void save_findOne() {
+    void save_findOne() {
         // given
         Member member = TestHelper.createMember();
 
@@ -28,16 +28,16 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
 
         // then
-        assertEquals(memberRepository.findOne(member.getMember_no()), member);
+        assertEquals(memberRepository.findOne(member.getMemberNo()), member);
     }
 
     @Test
-    public void findOne_실패() {
+    void findOne_실패() {
         assertThrows(NoMemberFoundException.class, () -> memberRepository.findOne(-1L));
     }
 
     @Test
-    public void findActualMemberById() {
+    void findActualMemberById() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -53,13 +53,13 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    public void findActualMemberById_EmptyResult() {
+    void findActualMemberById_EmptyResult() {
         List<Member> members = memberRepository.findActualMemberById("cantExist");
         assertEquals(0, members.size());
     }
 
     @Test
-    public void findOneActualMemberById() {
+    void findOneActualMemberById() {
         // given
         Member member = TestHelper.createMember();
         memberRepository.save(member);
@@ -72,12 +72,12 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    public void findOneActualMemberById_실패() {
+    void findOneActualMemberById_실패() {
         assertThrows(NoMemberFoundException.class, () -> memberRepository.findOneActualMemberById("cantExist"));
     }
 
     @Test
-    public void findActualMemberByEmailAddress() {
+    void findActualMemberByEmailAddress() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -93,12 +93,12 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    public void findOneActualMemberByEmailAddress_실패() {
+    void findOneActualMemberByEmailAddress_실패() {
         assertThrows(NoMemberFoundException.class, () -> memberRepository.findOneActualMemberByEmailAddress("cantExist"));
     }
 
     @Test
-    public void findOneActualMemberByEmailAddress() {
+    void findOneActualMemberByEmailAddress() {
         // given
         Member member = TestHelper.createMember();
         memberRepository.save(member);
@@ -111,7 +111,7 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    public void chkExistsActualMemberById() {
+    void chkExistsActualMemberById() {
         // given
         Member member = TestHelper.createMember();
 
@@ -126,7 +126,7 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    public void chkExistsActualMemberByEmailAddress() {
+    void chkExistsActualMemberByEmailAddress() {
         // given
         Member member = TestHelper.createMember();
 

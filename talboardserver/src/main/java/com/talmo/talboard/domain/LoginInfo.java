@@ -1,6 +1,6 @@
 package com.talmo.talboard.domain;
 
-import com.talmo.talboard.exception.ExceptionConstants;
+import com.talmo.talboard.config.ExceptionConstants;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Embeddable;

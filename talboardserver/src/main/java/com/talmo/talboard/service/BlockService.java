@@ -21,7 +21,7 @@ public class BlockService {
         member.getBlockList().forEach(blockRepository::delete);
         member.cleanBlockList();
 
-        blockRepository.findMemberBlockedList(member.getMember_no()).forEach(block -> unblockMember(block.getMember(), member));
+        blockRepository.findMemberBlockedList(member.getMemberNo()).forEach(block -> unblockMember(block.getMember(), member));
     }
 
     /**

@@ -36,7 +36,7 @@ public class PostsController {
     @PostMapping("/posts/create")
     public ResponseEntity<Map<String, Object>> createPost(PostCreateVO vo) {
         try {
-            Member member = memberRepository.findOne(vo.getMember_no());
+            Member member = memberRepository.findOne(vo.getMemberNo());
             Post post = Post.create(vo, member);
             Long post_no = postService.create(post);
             return ResponseEntity.ok()

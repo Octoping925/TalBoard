@@ -2,6 +2,7 @@ package com.talmo.talboard.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
@@ -11,9 +12,8 @@ import com.talmo.talboard.domain.vo.MemberFindPasswordVO;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import com.talmo.talboard.domain.vo.MemberNoVO;
 import com.talmo.talboard.domain.vo.MemberResignVO;
-import com.talmo.talboard.domain.vo.PostCreateVO;
 import com.talmo.talboard.domain.vo.PostInfoVO;
-import com.talmo.talboard.exception.ExceptionConstants;
+import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
@@ -31,14 +31,14 @@ import org.springframework.transaction.annotation.Transactional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class MemberControllerTest {
+class MemberControllerTest {
     @Autowired MemberService memberService;
     @Autowired BlockService blockService;
     @Autowired MemberController memberController;
     @Autowired PostRepository postRepository;
 
     @Test
-    public void join() {
+    void join() {
         // given
         MemberJoinVO vo = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
 
@@ -46,11 +46,11 @@ public class MemberControllerTest {
         Map<String, Object> body = memberController.join(vo).getBody();
 
         // then
-        assertEquals("회원 가입 성공", body.get("message"));
+        assertEquals(ResponseConstants.REGIST_SUCCESS_MESSAGE, body.get("message"));
     }
 
     @Test
-    public void join_유효성실패() {
+    void join_유효성실패() {
         // given
         MemberJoinVO vo = new MemberJoinVO(TestHelper.failId, TestHelper.testPw, TestHelper.testEmail);
         MemberJoinVO vo2 = new MemberJoinVO(TestHelper.testId, TestHelper.failPw, TestHelper.testEmail);
@@ -79,7 +79,7 @@ public class MemberControllerTest {
     }
     
     @Test
-    public void join_중복아이디이메일() {
+    void join_중복아이디이메일() {
         // given
         memberService.join(TestHelper.createMember());
         MemberJoinVO vo = TestHelper.createMemberJoinVO();
@@ -105,7 +105,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void resign() {
+    void resign() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -116,21 +116,21 @@ public class MemberControllerTest {
         memberService.join(member3);
 
         // when
-        MemberResignVO vo = new MemberResignVO(member.getMember_no(), member2.getMember_no());
+        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
         Map<String, Object> body = memberController.resign(vo).getBody();
 
-        MemberResignVO vo2 = new MemberResignVO(member3.getMember_no(), member3.getMember_no());
+        MemberResignVO vo2 = new MemberResignVO(member3.getMemberNo(), member3.getMemberNo());
         Map<String, Object> body2 = memberController.resign(vo2).getBody();
 
         // then
         assertNull(body.get("data"));
-        assertEquals("회원 탈퇴 성공", body.get("message"));
+        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body.get("message"));
         assertNull(body2.get("data"));
-        assertEquals("회원 탈퇴 성공", body2.get("message"));
+        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body2.get("message"));
     }
 
     @Test
-    public void resign_권한없음() {
+    void resign_권한없음() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -138,7 +138,7 @@ public class MemberControllerTest {
         memberService.join(member2);
 
         // when
-        MemberResignVO vo = new MemberResignVO(member.getMember_no(), member2.getMember_no());
+        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
         Map<String, Object> body = memberController.resign(vo).getBody();
 
         // then
@@ -147,12 +147,12 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void resign_회원찾기실패() {
+    void resign_회원찾기실패() {
         // given
         Member member = TestHelper.createMember();
         memberService.join(member);
-        MemberResignVO vo = new MemberResignVO(member.getMember_no(), -1L);
-        MemberResignVO vo2 = new MemberResignVO(-1L, member.getMember_no());
+        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), -1L);
+        MemberResignVO vo2 = new MemberResignVO(-1L, member.getMemberNo());
         MemberResignVO vo3 = new MemberResignVO(-1L, -1L);
 
         // when
@@ -170,7 +170,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void findId() {
+    void findId() {
         // given
         Member member = TestHelper.createMember();
         memberService.join(member);
@@ -182,11 +182,11 @@ public class MemberControllerTest {
 
         // then
         assertEquals(member.getId(), body.get("data"));
-        assertEquals("아이디 찾기 성공", body.get("message"));
+        assertEquals(ResponseConstants.FINDID_SUCCESS_MESSAGE, body.get("message"));
     }
 
     @Test
-    public void findId_실패() {
+    void findId_실패() {
         // given
         MemberFindIdVO vo = new MemberFindIdVO();
         vo.setEmailAddress(TestHelper.testEmail);
@@ -200,7 +200,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void findPassword() {
+    void findPassword() {
         // given
         Member member = TestHelper.createMember();
         memberService.join(member);
@@ -212,11 +212,11 @@ public class MemberControllerTest {
 
         // then
         assertEquals(member.getPassword(), body.get("data"));
-        assertEquals("비밀번호 찾기 성공", body.get("message"));
+        assertEquals(ResponseConstants.FINDPW_SUCCESS_MESSAGE, body.get("message"));
     }
 
     @Test
-    public void findPassword_실패() {
+    void findPassword_실패() {
         // given
         MemberFindPasswordVO vo = new MemberFindPasswordVO();
         vo.setId(TestHelper.testPw);
@@ -230,23 +230,23 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void changeAccountInfo() {
+    void changeAccountInfo() {
     }
 
     @Test
-    public void changeAccountInfo_실패() {
+    void changeAccountInfo_실패() {
     }
 
     @Test
-    public void findBlockList() {
+    void findBlockList() {
     }
 
     @Test
-    public void findBlockList_실패() {
+    void findBlockList_실패() {
     }
 
     @Test
-    public void blockMember() {
+    void blockMember() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -255,23 +255,23 @@ public class MemberControllerTest {
 
         // when
         MemberBlockVO vo = new MemberBlockVO();
-        vo.setMember_no(member.getMember_no());
-        vo.setBlocked_member_no(member2.getMember_no());
+        vo.setMemberNo(member.getMemberNo());
+        vo.setBlockedMemberNo(member2.getMemberNo());
         ResponseEntity<Map<String, Object>> res = memberController.blockMember(vo);
 
         // then
         Map<String, Object> body = res.getBody();
         assertEquals(HttpStatus.OK, res.getStatusCode());
         assertNull(body.get("data"));
-        assertEquals("차단 성공", body.get("message"));
+        assertEquals(ResponseConstants.BLOCK_SUCCESS_MESSAGE, body.get("message"));
     }
 
     @Test
-    public void blockMember_실패() {
+    void blockMember_실패() {
     }
 
     @Test
-    public void unblockMember() {
+    void unblockMember() {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
@@ -281,24 +281,24 @@ public class MemberControllerTest {
 
         // when
         MemberBlockVO vo = new MemberBlockVO();
-        vo.setMember_no(member.getMember_no());
-        vo.setBlocked_member_no(member2.getMember_no());
+        vo.setMemberNo(member.getMemberNo());
+        vo.setBlockedMemberNo(member2.getMemberNo());
         ResponseEntity<Map<String, Object>> res = memberController.unblockMember(vo);
 
         // then
         Map<String, Object> body = res.getBody();
         assertEquals(HttpStatus.OK, res.getStatusCode());
         assertNull(body.get("data"));
-        assertEquals("차단 해제 성공", body.get("message"));
+        assertEquals(ResponseConstants.UNBLOCK_SUCCESS_MESSAGE, body.get("message"));
     }
 
     @Test
-    public void unblockMember_실패() {
+    void unblockMember_실패() {
         
     }
 
     @Test
-    public void getMemberPostList() {
+    void getMemberPostList() {
         // given
         Member member = TestHelper.createMember();
         Post post = TestHelper.createPost(member);
@@ -309,7 +309,7 @@ public class MemberControllerTest {
         postRepository.save(post2);
 
         MemberNoVO vo = new MemberNoVO();
-        vo.setMember_no(member.getMember_no());
+        vo.setMemberNo(member.getMemberNo());
 
         // when
         Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
@@ -322,14 +322,14 @@ public class MemberControllerTest {
         assertEquals(postList.get(0).getTitle(), post.getTitle());
         assertEquals(postList.get(1).getPost_no(), post2.getPost_no());
         assertEquals(postList.get(1).getTitle(), post2.getTitle());
-        assertEquals("조회 성공", message);
+        assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
     }
 
     @Test
-    public void getMemberPostList_멤버없을때() {
+    void getMemberPostList_멤버없을때() {
         // given
         MemberNoVO vo = new MemberNoVO();
-        vo.setMember_no(-1L);
+        vo.setMemberNo(-1L);
 
         // when
         Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
@@ -338,6 +338,6 @@ public class MemberControllerTest {
 
         // then
         assertEquals(0, postList.size());
-        assertEquals("조회 성공", message);
+        assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
     }
 }

@@ -14,7 +14,7 @@ public class MemberRepository {
     private final EntityManager em;
 
     public void save(Member member) {
-        if(member.getMember_no() == null) {
+        if(member.getMemberNo() == null) {
             em.persist(member);
         }
         else {

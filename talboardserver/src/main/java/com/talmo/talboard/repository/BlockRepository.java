@@ -1,11 +1,9 @@
 package com.talmo.talboard.repository;
 
 import com.talmo.talboard.domain.Block;
-import com.talmo.talboard.domain.Member;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-import com.talmo.talboard.exception.NoMemberFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,24 +20,24 @@ public class BlockRepository {
         em.remove(block);
     }
 
-    public List<Block> findBlock(Long member_no, Long blockMemberNo) {
+    public List<Block> findBlock(Long memberNo, Long blockMemberNo) {
         return em.createQuery("SELECT b FROM Block b " +
-                        "WHERE b.blockId.member.member_no = :member_no" +
-                        " AND b.blockId.blockedMember.member_no = :block_member_no", Block.class)
-                .setParameter("member_no", member_no)
-                .setParameter("block_member_no", blockMemberNo)
+                        "WHERE b.blockId.member.memberNo = :memberNo" +
+                        " AND b.blockId.blockedMember.memberNo = :blockMemberNo", Block.class)
+                .setParameter("memberNo", memberNo)
+                .setParameter("blockMemberNo", blockMemberNo)
                 .getResultList();
     }
 
-    public List<Block> findMemberBlockList(Long member_no) {
-        return em.createQuery("SELECT b FROM Block b WHERE b.blockId.member.member_no = :member_no", Block.class)
-                .setParameter("member_no", member_no)
+    public List<Block> findMemberBlockList(Long memberNo) {
+        return em.createQuery("SELECT b FROM Block b WHERE b.blockId.member.memberNo = :memberNo", Block.class)
+                .setParameter("memberNo", memberNo)
                 .getResultList();
     }
 
-    public List<Block> findMemberBlockedList(Long member_no) {
-        return em.createQuery("SELECT b FROM Block b WHERE b.blockId.blockedMember.member_no = :member_no", Block.class)
-                .setParameter("member_no", member_no)
+    public List<Block> findMemberBlockedList(Long memberNo) {
+        return em.createQuery("SELECT b FROM Block b WHERE b.blockId.blockedMember.memberNo = :memberNo", Block.class)
+                .setParameter("memberNo", memberNo)
                 .getResultList();
     }
 }

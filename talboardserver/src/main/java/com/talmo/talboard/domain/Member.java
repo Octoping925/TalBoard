@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,8 @@ import lombok.Getter;
 @Getter
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long member_no;
+    @Column(name = "member_no")
+    private Long memberNo;
 
     @NotNull
     @Embedded
@@ -61,7 +63,7 @@ public class Member {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Member) {
-            return Objects.equals(this.member_no, ((Member) obj).getMember_no());
+            return Objects.equals(this.memberNo, ((Member) obj).getMemberNo());
         }
         return false;
     }
@@ -102,6 +104,11 @@ public class Member {
         }
     }
 
+    /**
+     * 매개변수로 주어진 회원이 차단 리스트에 포함되는지 확인
+     * @param member 차단됐는지 확인할 회원
+     * @return 차단 여부
+     */
     public boolean isBlockMember(Member member) {
         return blockList.stream().map(Block::getBlockedMember)
             .anyMatch(blockedMember -> blockedMember.equals(member));
