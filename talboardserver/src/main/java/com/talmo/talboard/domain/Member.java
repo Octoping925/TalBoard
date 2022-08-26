@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -66,6 +67,11 @@ public class Member {
             return Objects.equals(this.memberNo, ((Member) obj).getMemberNo());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(this.memberNo);
     }
 
     public String getId() {
