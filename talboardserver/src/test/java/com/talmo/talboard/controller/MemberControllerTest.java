@@ -255,8 +255,8 @@ class MemberControllerTest {
                          .contentType(MediaType.APPLICATION_JSON))
 
          // then
-         .andExpect(status().isOk())
-         .andExpect(jsonPath("$.message").value(ResponseConstants.BLOCK_SUCCESS_MESSAGE));
+         .andExpect(status().isNotFound())
+         .andExpect(jsonPath("$.message").value(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE));
      }
 
      @Test
