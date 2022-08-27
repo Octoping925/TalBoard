@@ -1,343 +1,349 @@
 package com.talmo.talboard.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
-import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.MemberBlockVO;
-import com.talmo.talboard.domain.vo.MemberFindIdVO;
-import com.talmo.talboard.domain.vo.MemberFindPasswordVO;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
-import com.talmo.talboard.domain.vo.MemberNoVO;
-import com.talmo.talboard.domain.vo.MemberResignVO;
-import com.talmo.talboard.domain.vo.PostInfoVO;
 import com.talmo.talboard.config.ExceptionConstants;
-import com.talmo.talboard.repository.PostRepository;
+import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
-import java.util.List;
-import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@Transactional
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+// @ExtendWith(SpringExtension.class)
+@WebMvcTest(MemberController.class)
+// @Transactional
 class MemberControllerTest {
-    @Autowired MemberService memberService;
-    @Autowired BlockService blockService;
-    @Autowired MemberController memberController;
-    @Autowired PostRepository postRepository;
+    // @Autowired MemberService memberService;
+    // @Autowired BlockService blockService;
+    // @Autowired MemberController memberController;
+    // @Autowired PostRepository postRepository;
 
-    @Test
-    void join() {
-        // given
-        MemberJoinVO vo = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+    @Autowired MockMvc mockMvc;
+    @MockBean MemberService memberService;
+    @MockBean BlockService blockService;
+    @MockBean MemberRepository memberRepository;
 
-        // when
-        Map<String, Object> body = memberController.join(vo).getBody();
+    MultiValueMap<String, String> multiValueMap;
 
-        // then
-        assertEquals(ResponseConstants.REGIST_SUCCESS_MESSAGE, body.get("message"));
+    @BeforeEach
+    public void initSetting() {
+        multiValueMap = new LinkedMultiValueMap<>();
     }
 
     @Test
-    void join_유효성실패() {
+    void join() throws Exception {
         // given
-        MemberJoinVO vo = new MemberJoinVO(TestHelper.failId, TestHelper.testPw, TestHelper.testEmail);
-        MemberJoinVO vo2 = new MemberJoinVO(TestHelper.testId, TestHelper.failPw, TestHelper.testEmail);
-        MemberJoinVO vo3 = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.failEmail);
+        MemberJoinVO vo = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+        given(memberService.join(Member.regist(vo))).willReturn(1L);
 
         // when
-        ResponseEntity<Map<String, Object>> res = memberController.join(vo);
-        Map<String, Object> body = res.getBody();
-        ResponseEntity<Map<String, Object>> res2 = memberController.join(vo2);
-        Map<String, Object> body2 = res2.getBody();
-        ResponseEntity<Map<String, Object>> res3 = memberController.join(vo3);
-        Map<String, Object> body3 = res3.getBody();
+        mockMvc.perform(post("/members/regist")
+        .param("id", vo.getId())
+        .param("password", vo.getPassword())
+        .param("emailAddress", vo.getEmailAddress())
+        .contentType(MediaType.APPLICATION_JSON))
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.INVALID_ID_MESSAGE, body.get("message"));
+        .andExpect(status().isOk());
+    }
 
-        assertEquals(HttpStatus.BAD_REQUEST, res2.getStatusCode());
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, body2.get("message"));
+    @Test
+    void join_아이디유효성실패() throws Exception {
+        mockMvc.perform(post("/members/regist")
+        .param("id", TestHelper.failId)
+        .param("password", TestHelper.failPw)
+        .param("emailAddress", TestHelper.testEmail)
+        .contentType(MediaType.APPLICATION_JSON))
 
-        assertEquals(HttpStatus.BAD_REQUEST, res3.getStatusCode());
-        assertNull(body3.get("data"));
-        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, body3.get("message"));
+        // then
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(ExceptionConstants.INVALID_ID_MESSAGE));
+    }
+
+    @Test
+    void join_비밀번호유효성실패() throws Exception {
+        mockMvc.perform(post("/members/regist")
+        .param("id", TestHelper.testId)
+        .param("password", TestHelper.failPw)
+        .param("emailAddress", TestHelper.testEmail)
+        .contentType(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(ExceptionConstants.INVALID_PW_MESSAGE));
+    }
+
+    @Test
+    void join_이메일유효성실패() throws Exception {
+        mockMvc.perform(post("/members/regist")
+        .param("id", TestHelper.testId)
+        .param("password", TestHelper.testPw)
+        .param("emailAddress", TestHelper.failEmail)
+        .contentType(MediaType.APPLICATION_JSON))
+
+        // then
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(ExceptionConstants.INVALID_EMAIL_MESSAGE));
     }
     
     @Test
-    void join_중복아이디이메일() {
+    void join_중복아이디이메일() throws Exception {
         // given
-        memberService.join(TestHelper.createMember());
-        MemberJoinVO vo = TestHelper.createMemberJoinVO();
-        vo.setEmailAddress(TestHelper.testEmail2);
-        MemberJoinVO vo2 = TestHelper.createMemberJoinVO();
-        vo2.setId(TestHelper.testId2);
+        MemberJoinVO vo = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
+        when(memberService.join(Member.regist(vo)))
+        .thenThrow(new IllegalStateException(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE));
+
 
         // when
-        ResponseEntity<Map<String, Object>> res = memberController.join(vo);
-        Map<String, Object> body = res.getBody();
-        ResponseEntity<Map<String, Object>> res2 = memberController.join(vo2);
-        Map<String, Object> body2 = res2.getBody();
+        mockMvc.perform(post("/members/regist")
+        .param("id", vo.getId())
+        .param("password", vo.getPassword())
+        .param("emailAddress", vo.getEmailAddress())
+        .contentType(MediaType.APPLICATION_JSON))
 
         // then
-        assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.DUPLICATE_ID_MESSAGE, body.get("message"));
-
-        assertEquals(HttpStatus.CONFLICT, res2.getStatusCode());
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, body2.get("message"));
-
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.message").value(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE));
     }
 
     @Test
-    void resign() {
-        // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-        Member member3 = TestHelper.createMember(3);
-        member.setAdminYn(true);
-        memberService.join(member);
-        memberService.join(member2);
-        memberService.join(member3);
-
-        // when
-        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
-        Map<String, Object> body = memberController.resign(vo).getBody();
-
-        MemberResignVO vo2 = new MemberResignVO(member3.getMemberNo(), member3.getMemberNo());
-        Map<String, Object> body2 = memberController.resign(vo2).getBody();
+    void resign() throws Exception {
+        mockMvc.perform(delete("/members/resign")
+        .param("memberNo", "1")
+        .param("resignMemberNo", "2")
+        .contentType(MediaType.APPLICATION_JSON))
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body.get("message"));
-        assertNull(body2.get("data"));
-        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body2.get("message"));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value(ResponseConstants.RESIGN_SUCCESS_MESSAGE));
     }
 
-    @Test
-    void resign_권한없음() {
-        // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-        memberService.join(member);
-        memberService.join(member2);
+    // @Test
+    // void resign_권한없음() {
+    //     // given
+    //     Member member = TestHelper.createMember(1);
+    //     Member member2 = TestHelper.createMember(2);
+    //     memberService.join(member);
+    //     memberService.join(member2);
 
-        // when
-        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
-        Map<String, Object> body = memberController.resign(vo).getBody();
+    //     // when
+    //     MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
+    //     Map<String, Object> body = memberController.resign(vo).getBody();
 
-        // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     assertNull(body.get("data"));
+    //     assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void resign_회원찾기실패() {
-        // given
-        Member member = TestHelper.createMember();
-        memberService.join(member);
-        MemberResignVO vo = new MemberResignVO(member.getMemberNo(), -1L);
-        MemberResignVO vo2 = new MemberResignVO(-1L, member.getMemberNo());
-        MemberResignVO vo3 = new MemberResignVO(-1L, -1L);
+    // @Test
+    // void resign_회원찾기실패() {
+    //     // given
+    //     Member member = TestHelper.createMember();
+    //     memberService.join(member);
+    //     MemberResignVO vo = new MemberResignVO(member.getMemberNo(), -1L);
+    //     MemberResignVO vo2 = new MemberResignVO(-1L, member.getMemberNo());
+    //     MemberResignVO vo3 = new MemberResignVO(-1L, -1L);
 
-        // when
-        Map<String, Object> body = memberController.resign(vo).getBody();
-        Map<String, Object> body2 = memberController.resign(vo2).getBody();
-        Map<String, Object> body3 = memberController.resign(vo3).getBody();
+    //     // when
+    //     Map<String, Object> body = memberController.resign(vo).getBody();
+    //     Map<String, Object> body2 = memberController.resign(vo2).getBody();
+    //     Map<String, Object> body3 = memberController.resign(vo3).getBody();
 
-        // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.get("message"));
-        assertNull(body3.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body3.get("message"));
-    }
+    //     // then
+    //     assertNull(body.get("data"));
+    //     assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
+    //     assertNull(body2.get("data"));
+    //     assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.get("message"));
+    //     assertNull(body3.get("data"));
+    //     assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body3.get("message"));
+    // }
 
-    @Test
-    void findId() {
-        // given
-        Member member = TestHelper.createMember();
-        memberService.join(member);
-        MemberFindIdVO vo = new MemberFindIdVO();
-        vo.setEmailAddress(member.getEmailAddress());
+    // @Test
+    // void findId() {
+    //     // given
+    //     Member member = TestHelper.createMember();
+    //     memberService.join(member);
+    //     MemberFindIdVO vo = new MemberFindIdVO();
+    //     vo.setEmailAddress(member.getEmailAddress());
 
-        // when
-        Map<String, Object> body = memberController.findId(vo).getBody();
+    //     // when
+    //     Map<String, Object> body = memberController.findId(vo).getBody();
 
-        // then
-        assertEquals(member.getId(), body.get("data"));
-        assertEquals(ResponseConstants.FINDID_SUCCESS_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     assertEquals(member.getId(), body.get("data"));
+    //     assertEquals(ResponseConstants.FINDID_SUCCESS_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void findId_실패() {
-        // given
-        MemberFindIdVO vo = new MemberFindIdVO();
-        vo.setEmailAddress(TestHelper.testEmail);
+    // @Test
+    // void findId_실패() {
+    //     // given
+    //     MemberFindIdVO vo = new MemberFindIdVO();
+    //     vo.setEmailAddress(TestHelper.testEmail);
 
-        // when
-        Map<String, Object> body = memberController.findId(vo).getBody();
+    //     // when
+    //     Map<String, Object> body = memberController.findId(vo).getBody();
 
-        // then
-        assertEquals(null, body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     assertEquals(null, body.get("data"));
+    //     assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void findPassword() {
-        // given
-        Member member = TestHelper.createMember();
-        memberService.join(member);
-        MemberFindPasswordVO vo = new MemberFindPasswordVO();
-        vo.setId(member.getId());
+    // @Test
+    // void findPassword() {
+    //     // given
+    //     Member member = TestHelper.createMember();
+    //     memberService.join(member);
+    //     MemberFindPasswordVO vo = new MemberFindPasswordVO();
+    //     vo.setId(member.getId());
 
-        // when
-        Map<String, Object> body = memberController.findPassword(vo).getBody();
+    //     // when
+    //     Map<String, Object> body = memberController.findPassword(vo).getBody();
 
-        // then
-        assertEquals(member.getPassword(), body.get("data"));
-        assertEquals(ResponseConstants.FINDPW_SUCCESS_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     assertEquals(member.getPassword(), body.get("data"));
+    //     assertEquals(ResponseConstants.FINDPW_SUCCESS_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void findPassword_실패() {
-        // given
-        MemberFindPasswordVO vo = new MemberFindPasswordVO();
-        vo.setId(TestHelper.testPw);
+    // @Test
+    // void findPassword_실패() {
+    //     // given
+    //     MemberFindPasswordVO vo = new MemberFindPasswordVO();
+    //     vo.setId(TestHelper.testPw);
 
-        // when
-        Map<String, Object> body = memberController.findPassword(vo).getBody();
+    //     // when
+    //     Map<String, Object> body = memberController.findPassword(vo).getBody();
 
-        // then
-        assertEquals(null, body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     assertEquals(null, body.get("data"));
+    //     assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void changeAccountInfo() {
-    }
+    // @Test
+    // void changeAccountInfo() {
+    // }
 
-    @Test
-    void changeAccountInfo_실패() {
-    }
+    // @Test
+    // void changeAccountInfo_실패() {
+    // }
 
-    @Test
-    void findBlockList() {
-    }
+    // @Test
+    // void findBlockList() {
+    // }
 
-    @Test
-    void findBlockList_실패() {
-    }
+    // @Test
+    // void findBlockList_실패() {
+    // }
 
-    @Test
-    void blockMember() {
-        // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-        memberService.join(member);
-        memberService.join(member2);
+    // @Test
+    // void blockMember() {
+    //     // given
+    //     Member member = TestHelper.createMember(1);
+    //     Member member2 = TestHelper.createMember(2);
+    //     memberService.join(member);
+    //     memberService.join(member2);
 
-        // when
-        MemberBlockVO vo = new MemberBlockVO();
-        vo.setMemberNo(member.getMemberNo());
-        vo.setBlockedMemberNo(member2.getMemberNo());
-        ResponseEntity<Map<String, Object>> res = memberController.blockMember(vo);
+    //     // when
+    //     MemberBlockVO vo = new MemberBlockVO();
+    //     vo.setMemberNo(member.getMemberNo());
+    //     vo.setBlockedMemberNo(member2.getMemberNo());
+    //     ResponseEntity<Map<String, Object>> res = memberController.blockMember(vo);
 
-        // then
-        Map<String, Object> body = res.getBody();
-        assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.BLOCK_SUCCESS_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     Map<String, Object> body = res.getBody();
+    //     assertEquals(HttpStatus.OK, res.getStatusCode());
+    //     assertNull(body.get("data"));
+    //     assertEquals(ResponseConstants.BLOCK_SUCCESS_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void blockMember_실패() {
-    }
+    // @Test
+    // void blockMember_실패() {
+    // }
 
-    @Test
-    void unblockMember() {
-        // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-        memberService.join(member);
-        memberService.join(member2);
-        blockService.blockMember(member, member2);
+    // @Test
+    // void unblockMember() {
+    //     // given
+    //     Member member = TestHelper.createMember(1);
+    //     Member member2 = TestHelper.createMember(2);
+    //     memberService.join(member);
+    //     memberService.join(member2);
+    //     blockService.blockMember(member, member2);
 
-        // when
-        MemberBlockVO vo = new MemberBlockVO();
-        vo.setMemberNo(member.getMemberNo());
-        vo.setBlockedMemberNo(member2.getMemberNo());
-        ResponseEntity<Map<String, Object>> res = memberController.unblockMember(vo);
+    //     // when
+    //     MemberBlockVO vo = new MemberBlockVO();
+    //     vo.setMemberNo(member.getMemberNo());
+    //     vo.setBlockedMemberNo(member2.getMemberNo());
+    //     ResponseEntity<Map<String, Object>> res = memberController.unblockMember(vo);
 
-        // then
-        Map<String, Object> body = res.getBody();
-        assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.UNBLOCK_SUCCESS_MESSAGE, body.get("message"));
-    }
+    //     // then
+    //     Map<String, Object> body = res.getBody();
+    //     assertEquals(HttpStatus.OK, res.getStatusCode());
+    //     assertNull(body.get("data"));
+    //     assertEquals(ResponseConstants.UNBLOCK_SUCCESS_MESSAGE, body.get("message"));
+    // }
 
-    @Test
-    void unblockMember_실패() {
+    // @Test
+    // void unblockMember_실패() {
         
-    }
+    // }
 
-    @Test
-    void getMemberPostList() {
-        // given
-        Member member = TestHelper.createMember();
-        Post post = TestHelper.createPost(member);
-        Post post2 = TestHelper.createPost(member, 3, 5);
+    // @Test
+    // void getMemberPostList() {
+    //     // given
+    //     Member member = TestHelper.createMember();
+    //     Post post = TestHelper.createPost(member);
+    //     Post post2 = TestHelper.createPost(member, 3, 5);
 
-        memberService.join(member);
-        postRepository.save(post);
-        postRepository.save(post2);
+    //     memberService.join(member);
+    //     postRepository.save(post);
+    //     postRepository.save(post2);
 
-        MemberNoVO vo = new MemberNoVO();
-        vo.setMemberNo(member.getMemberNo());
+    //     MemberNoVO vo = new MemberNoVO();
+    //     vo.setMemberNo(member.getMemberNo());
 
-        // when
-        Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
-        String message = (String) body.get("message");
+    //     // when
+    //     Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
+    //     List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
+    //     String message = (String) body.get("message");
 
-        // then
-        assertEquals(2, postList.size());
-        assertEquals(postList.get(0).getPost_no(), post.getPost_no());
-        assertEquals(postList.get(0).getTitle(), post.getTitle());
-        assertEquals(postList.get(1).getPost_no(), post2.getPost_no());
-        assertEquals(postList.get(1).getTitle(), post2.getTitle());
-        assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
-    }
+    //     // then
+    //     assertEquals(2, postList.size());
+    //     assertEquals(postList.get(0).getPost_no(), post.getPost_no());
+    //     assertEquals(postList.get(0).getTitle(), post.getTitle());
+    //     assertEquals(postList.get(1).getPost_no(), post2.getPost_no());
+    //     assertEquals(postList.get(1).getTitle(), post2.getTitle());
+    //     assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
+    // }
 
-    @Test
-    void getMemberPostList_멤버없을때() {
-        // given
-        MemberNoVO vo = new MemberNoVO();
-        vo.setMemberNo(-1L);
+    // @Test
+    // void getMemberPostList_멤버없을때() {
+    //     // given
+    //     MemberNoVO vo = new MemberNoVO();
+    //     vo.setMemberNo(-1L);
 
-        // when
-        Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
-        String message = (String) body.get("message");
+    //     // when
+    //     Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
+    //     List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
+    //     String message = (String) body.get("message");
 
-        // then
-        assertEquals(0, postList.size());
-        assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
-    }
+    //     // then
+    //     assertEquals(0, postList.size());
+    //     assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
+    // }
 }
