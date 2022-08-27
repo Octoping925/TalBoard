@@ -68,8 +68,8 @@ class MemberServiceTest {
         memberRepository.save(member2);
 
         // when
-        memberService.resign(member.getMemberNo(), member2.getMemberNo());
-        memberService.resign(member.getMemberNo(), member.getMemberNo());
+        memberService.resign(member, member2);
+        memberService.resign(member, member);
 
         // then
         assertTrue(member.isResignYn());
@@ -86,14 +86,10 @@ class MemberServiceTest {
         memberRepository.save(member2);
 
         // when
-        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member.getMemberNo(), member2.getMemberNo()));
-        NoMemberFoundException thrown2 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(member.getMemberNo(),-1L));
-        NoMemberFoundException thrown3 = assertThrows(NoMemberFoundException.class, () -> memberService.resign(-1L, member.getMemberNo()));
+        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member, member2));
 
         // then
         assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, thrown.getMessage());
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown2.getMessage());
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown3.getMessage());
     }
 
     @Test

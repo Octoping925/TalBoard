@@ -85,7 +85,10 @@ public class MemberController {
     @DeleteMapping("/members/resign")
     public ResponseEntity<Map<String, Object>> resign(MemberResignVO vo) {
         try {
-            memberService.resign(vo.getMemberNo(), vo.getResignMemberNo());
+            Member member = memberRepository.findOne(vo.getMemberNo());
+            Member resignMember = memberRepository.findOne(vo.getResignMemberNo());
+            memberService.resign(member, resignMember);
+
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, ResponseConstants.RESIGN_SUCCESS_MESSAGE));
         }
@@ -123,9 +126,9 @@ public class MemberController {
     @GetMapping("/members/find/password")
     public ResponseEntity<Map<String, Object>> findPassword(MemberFindPasswordVO vo) {
         try {
-            String id = memberService.findPassword(vo.getId());
+            String password = memberService.findPassword(vo.getId());
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(id, ResponseConstants.FINDPW_SUCCESS_MESSAGE));
+                    .body(ResponseObject.create(password, ResponseConstants.FINDPW_SUCCESS_MESSAGE));
         }
         catch(NoMemberFoundException e) {
             return ResponseEntity.badRequest()

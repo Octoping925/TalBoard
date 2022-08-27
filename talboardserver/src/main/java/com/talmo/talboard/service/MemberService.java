@@ -48,10 +48,7 @@ public class MemberService {
      * 회원 탈퇴
      */
     @Transactional
-    public void resign(Long memberNo, Long resignMemberNo) throws NoMemberFoundException {
-        Member member = memberRepository.findOne(memberNo);
-        Member resignMember = memberRepository.findOne(resignMemberNo);
-
+    public void resign(Member member, Member resignMember) {
         if(!member.equals(resignMember)
         && !member.isAdminYn()) {
             throw new NoAuthorizationException();
