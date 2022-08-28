@@ -1,28 +1,33 @@
 package com.talmo.talboard.controller;
 
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.anyLong;
+import static org.mockito.BDDMockito.anyString;
+import static org.mockito.BDDMockito.doReturn;
+import static org.mockito.BDDMockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
+import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 class MemberControllerTest {
@@ -211,21 +216,109 @@ class MemberControllerTest {
          .andExpect(jsonPath("$.message").value(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE));
      }
 
-    // @Test
-    // void changeAccountInfo() {
-    // }
+     @Test
+     void changeAccountInfo() throws Exception {
+         // given
+         doReturn(TestHelper.createMember()).when(memberRepository).findOne(anyLong());
 
-    // @Test
-    // void changeAccountInfo_실패() {
-    // }
+         // when
+         mockMvc.perform(patch("/members/accountInfo")
+                 .param("memberNo", "1")
+                 .param("password", TestHelper.testPw)
+                 .param("emailAddress", TestHelper.testEmail)
+                 .contentType(MediaType.APPLICATION_JSON))
 
-    // @Test
-    // void findBlockList() {
-    // }
+         // then
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("$.message").value(ResponseConstants.CHANGE_SUCCESS_MESSAGE));
+     }
 
-    // @Test
-    // void findBlockList_실패() {
-    // }
+     @Test
+     void changeAccountInfo_유효성검사실패() throws Exception {
+         // given
+         doReturn(TestHelper.createMember()).when(memberRepository).findOne(anyLong());
+         doThrow(new IllegalArgumentException(ExceptionConstants.INVALID_PW_MESSAGE))
+             .when(memberService).updateMemberData(any(Member.class), any(MemberDataChangeVO.class));
+
+         // when
+         mockMvc.perform(patch("/members/accountInfo")
+                 .param("memberNo", "1")
+                 .param("password", TestHelper.failPw)
+                 .param("emailAddress", TestHelper.failEmail)
+                 .contentType(MediaType.APPLICATION_JSON))
+
+         // then
+         .andExpect(status().isBadRequest())
+         .andExpect(jsonPath("$.message").value(ExceptionConstants.INVALID_PW_MESSAGE));
+     }
+
+    @Test
+    void changeAccountInfo_회원찾기실패() throws Exception {
+        // given
+        doThrow(new NoMemberFoundException()).when(memberRepository).findOne(anyLong());
+
+        // when
+        mockMvc.perform(patch("/members/accountInfo")
+                .param("memberNo", "1")
+                .param("password", TestHelper.testPw)
+                .param("emailAddress", TestHelper.testEmail)
+                .contentType(MediaType.APPLICATION_JSON))
+
+            // then
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE));
+    }
+
+    @Test
+    void changeAccountInfo_동일이메일존재() throws Exception {
+        // given
+        doReturn(TestHelper.createMember()).when(memberRepository).findOne(anyLong());
+        doThrow(new IllegalStateException(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE))
+            .when(memberService).updateMemberData(any(Member.class), any(MemberDataChangeVO.class));
+
+        // when
+        mockMvc.perform(patch("/members/accountInfo")
+                .param("memberNo", "1")
+                .param("password", TestHelper.testPw)
+                .param("emailAddress", TestHelper.testEmail)
+                .contentType(MediaType.APPLICATION_JSON))
+
+            // then
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.message").value(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE));
+    }
+
+     @Test
+     void findBlockList() throws Exception {
+         // given
+         doReturn(TestHelper.createMember()).when(memberRepository).findOne(anyLong());
+
+         // when
+         mockMvc.perform(get("/members/block")
+                 .param("memberNo", "1")
+                 .contentType(MediaType.APPLICATION_JSON))
+
+         // then
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("$.data").isArray())
+         .andExpect(jsonPath("$.message").value(ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+     }
+
+     @Test
+     void findBlockList_실패() throws Exception {
+         // given
+         doThrow(new NoMemberFoundException()).when(memberRepository).findOne(anyLong());
+
+         // when
+         mockMvc.perform(get("/members/block")
+                 .param("memberNo", "1")
+                 .contentType(MediaType.APPLICATION_JSON))
+
+         // then
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("$.data").isArray())
+         .andExpect(jsonPath("$.message").value(ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+     }
 
      @Test
      void blockMember() throws Exception {
