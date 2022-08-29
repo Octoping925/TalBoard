@@ -2,8 +2,8 @@ package com.talmo.talboard.exception;
 
 import com.talmo.talboard.config.ExceptionConstants;
 
-public class NoPostFoundExcetption extends RuntimeException{
-    public NoPostFoundExcetption() {
+public class NoPostFoundException extends RuntimeException{
+    public NoPostFoundException() {
         super(ExceptionConstants.NOT_FOUND_POST_MESSAGE);
     }
 }

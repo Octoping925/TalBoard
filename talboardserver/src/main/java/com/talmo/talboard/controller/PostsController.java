@@ -4,10 +4,10 @@ import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
+import com.talmo.talboard.domain.vo.DetailPostVO;
 import com.talmo.talboard.domain.vo.ListPostVO;
 import com.talmo.talboard.domain.vo.PostCreateVO;
-import com.talmo.talboard.exception.NoMemberFoundException;
-import com.talmo.talboard.exception.NoPostFoundExcetption;
+import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,15 +78,18 @@ public class PostsController {
     public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") String post_no) {
         try {
             Long postNo = Long.parseLong(post_no);
-            ListPostVO vo = new ListPostVO(postRepository.findOne(postNo));
+            DetailPostVO vo = new DetailPostVO(postService.findOne(postNo));
 
             return ResponseEntity.ok()
                     .body(ResponseObject.create(vo, "게시글 조회 성공"));
         }
+        catch (IllegalStateException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
         catch(NumberFormatException e) {
             return new ResponseEntity<>(ResponseObject.create(null, "요청한 값은 게시글 번호가 아닙니다."), HttpStatus.NOT_FOUND);
         }
-        catch(NoPostFoundExcetption e) {
+        catch(NoPostFoundException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
