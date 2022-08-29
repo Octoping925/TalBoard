@@ -6,6 +6,8 @@ import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.ListPostVO;
 import com.talmo.talboard.domain.vo.PostCreateVO;
+import com.talmo.talboard.exception.NoMemberFoundException;
+import com.talmo.talboard.exception.NoPostFoundExcetption;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
@@ -74,8 +76,20 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 상세 조회 실패")
     })
     @GetMapping("/posts/{post_no}")
-    public List<Post> getDetailOfPost() {
-        return null;
+    public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") String post_no) {
+        try {
+            Long postNo = Long.parseLong(post_no);
+            ListPostVO vo = new ListPostVO(postRepository.findOne(postNo));
+
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(vo, "게시글 조회 성공"));
+        }
+        catch(NumberFormatException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, "요청한 값은 게시글 번호가 아닙니다."), HttpStatus.NOT_FOUND);
+        }
+        catch(NoPostFoundExcetption e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="게시글 수정")

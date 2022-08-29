@@ -1,6 +1,7 @@
 package com.talmo.talboard.repository;
 
 import com.talmo.talboard.domain.Post;
+import com.talmo.talboard.exception.NoPostFoundExcetption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,5 +20,11 @@ public class PostRepository {
     public List<Post> findAll() {
         return em.createQuery("SELECT p FROM Post p WHERE p.delete_yn = 'N'")
                 .getResultList();
+    }
+
+    public Post findOne(Long postNo) {
+        Post post = em.find(Post.class, postNo);
+        if(post == null) throw new NoPostFoundExcetption();
+        return post;
     }
 }
