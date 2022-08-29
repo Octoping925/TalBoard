@@ -1,15 +1,11 @@
 package com.talmo.talboard.service;
 
-import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
-import com.talmo.talboard.repository.BlockRepository;
 import com.talmo.talboard.repository.MemberRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final BlockService blockService;
     private final MemberRepository memberRepository;
-    private final BlockRepository blockRepository;
 
     /**
      * 회원 가입
@@ -89,15 +84,5 @@ public class MemberService {
             }
             member.changeEmailAddress(vo.getEmailAddress());
         }
-    }
-
-    /**
-     * 회원 차단 목록 조회
-     */
-    public List<Member> findMemberBlockList(Long memberNo) throws NoMemberFoundException {
-        Member member = memberRepository.findOne(memberNo);
-        return blockRepository.findMemberBlockList(member.getMemberNo()).stream()
-                .map(Block::getBlockedMember)
-                .collect(Collectors.toList());
     }
 }

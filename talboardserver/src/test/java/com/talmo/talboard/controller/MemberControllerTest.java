@@ -20,7 +20,6 @@ import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
-import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ import org.springframework.test.web.servlet.MockMvc;
 class MemberControllerTest {
     @Autowired MockMvc mockMvc;
     @MockBean MemberService memberService;
-    @MockBean BlockService blockService;
     @MockBean MemberRepository memberRepository;
 
     @Test
@@ -394,9 +392,9 @@ class MemberControllerTest {
                          .param("memberNo", "1")
                          .contentType(MediaType.APPLICATION_JSON))
 
-                 // then
-                 .andExpect(status().isOk())
-                 .andExpect(jsonPath("$.message").value(ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+         // then
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("$.message").value(ResponseConstants.SEARCH_SUCCESS_MESSAGE));
      }
 
      @Test

@@ -163,30 +163,4 @@ class MemberServiceTest {
         // then
         assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, thrown.getMessage());
     }
-
-    @Test
-    void findMemberBlockList() {
-        // given
-        Member[] members = new Member[3];
-        for(int i = 0; i < 3; ++i) {
-            members[i] = TestHelper.createMember(i);
-            memberService.join(members[i]);
-        }
-        blockService.blockMember(members[0], members[1]);
-        blockService.blockMember(members[0], members[2]);
-
-        // when
-        List<Member> blockList = memberService.findMemberBlockList(members[0].getMemberNo());
-
-        // then
-        assertEquals(2, blockList.size());
-        assertEquals(members[1].getMemberNo(), blockList.get(0).getMemberNo());
-        assertEquals(members[2].getMemberNo(), blockList.get(1).getMemberNo());
-    }
-    
-    @Test
-    void findMemberBlockList_실패() {
-        NoMemberFoundException thrown = assertThrows(NoMemberFoundException.class, () -> memberService.findMemberBlockList(-1L));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, thrown.getMessage());
-    }
 }
