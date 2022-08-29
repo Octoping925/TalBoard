@@ -19,7 +19,9 @@ import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.vo.MemberDataChangeVO;
 import com.talmo.talboard.exception.NoAuthorizationException;
 import com.talmo.talboard.exception.NoMemberFoundException;
+import com.talmo.talboard.repository.BlockRepository;
 import com.talmo.talboard.repository.MemberRepository;
+import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ class MemberControllerTest {
     @Autowired MockMvc mockMvc;
     @MockBean MemberService memberService;
     @MockBean MemberRepository memberRepository;
+    @MockBean BlockService blockService;
+    @MockBean BlockRepository blockRepository;
 
     @Test
     void join() throws Exception {
