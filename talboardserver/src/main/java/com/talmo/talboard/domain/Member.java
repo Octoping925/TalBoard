@@ -4,9 +4,11 @@ import com.sun.istack.NotNull;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,7 +42,7 @@ public class Member {
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "blockId.member")
-    private List<Block> blockList = new ArrayList<>();
+    private Set<Block> blockList = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
     private List<Notice> notices = new ArrayList<>();
@@ -120,8 +122,8 @@ public class Member {
             .anyMatch(blockedMember -> blockedMember.equals(member));
     }
 
-    public void cleanBlockList() {
-        this.blockList.clear();
+    public Optional<Block> getBlockedMemberBlock(Member blockedMember) {
+        return blockList.stream().filter(block -> block.getBlockedMember().equals(blockedMember)).findAny();
     }
 
 }

@@ -82,7 +82,9 @@ class BlockServiceTest {
 
         // then
         assertEquals(1, member.getBlockList().size());
-        assertEquals(member2, member.getBlockList().get(0).getBlockedMember());
+        assertTrue(member.getBlockList().stream()
+            .map(Block::getBlockedMember)
+            .anyMatch(blockMember -> blockMember.equals(member2)));
     }
 
     @Test
