@@ -10,10 +10,10 @@ public class PostCreateVO {
     @ApiModelProperty(value="작성자", required = true)
     Long memberNo;
 
-    @ApiModelProperty(value="글 제목", required = true)
+    @ApiModelProperty(value="게시글 제목", required = true)
     String title;
 
-    @ApiModelProperty(value="글 내용", required = true)
+    @ApiModelProperty(value="게시글 내용", required = true)
     String context;
 
     public PostCreateVO(String title, String context) {
