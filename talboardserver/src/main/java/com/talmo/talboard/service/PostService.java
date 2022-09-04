@@ -1,7 +1,9 @@
 package com.talmo.talboard.service;
 
+import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.ListPostVO;
+import com.talmo.talboard.domain.vo.UpdatePostVO;
+import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Long create(Post post) {
@@ -28,4 +31,11 @@ public class PostService {
 
         return post;
     }
+
+//    @Transactional
+//    public void updatePost(Post post, UpdatePostVO vo) {
+//        if(vo.getTitle() != null && vo.getContext() != null) {
+//            post.update(vo, vo.getMemberNo());
+//        }
+//    }
 }

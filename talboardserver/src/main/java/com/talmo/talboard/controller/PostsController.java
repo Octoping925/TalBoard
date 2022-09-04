@@ -7,6 +7,7 @@ import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.DetailPostVO;
 import com.talmo.talboard.domain.vo.ListPostVO;
 import com.talmo.talboard.domain.vo.PostCreateVO;
+import com.talmo.talboard.domain.vo.UpdatePostVO;
 import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
@@ -102,8 +103,15 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 수정 실패")
     })
     @PatchMapping("/posts/{post_no}")
-    public List<Post> updatePost() {
-        return null;
+    public ResponseEntity<Map<String, Object>> updatePost(@PathVariable(name = "post_no") Long postNo, Member member) {
+        try {
+            Post post = Post.update(postNo);
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(post, "게시글 수정 성공"));
+        }
+        catch (IllegalStateException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="게시글 삭제")
