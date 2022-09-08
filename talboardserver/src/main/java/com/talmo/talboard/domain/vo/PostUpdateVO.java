@@ -6,11 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdatePostVO {
+public class PostUpdateVO {
     @ApiModelProperty(value="멤버 번호", required = true)
     Long memberNo;
-    @ApiModelProperty(value="게시글 번호", required = true)
-    Long postNo;
     @ApiModelProperty(value="게시글 제목", required = true)
     String title;
     @ApiModelProperty(value="게시글 내용", required = true)
