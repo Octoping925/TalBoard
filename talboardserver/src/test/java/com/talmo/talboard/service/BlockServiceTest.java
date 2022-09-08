@@ -94,9 +94,9 @@ class BlockServiceTest {
         Member member2 = TestHelper.createMember(2);
         Long memberNo = memberService.join(member);
         Long memberNo2 = memberService.join(member2);
+        blockService.blockMember(member, member2);
 
         // when
-        blockService.blockMember(member, member2);
         blockService.unblockMember(member, member2);
 
         // then

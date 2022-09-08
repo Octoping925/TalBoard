@@ -4,8 +4,6 @@ import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +19,7 @@ public class BlockService {
     @Transactional
     public void cleanMember(Member member) {
         // 특정 회원이 차단한 회원을 전부 차단 해제
-        member.getBlockList().stream()
-            .map(Block::getBlockedMember)
-            .forEach(blockMember -> unblockMember(member, blockMember));
+        member.getBlockList().clear();
 
         // 특정 회원을 차단한 회원의 차단을 전부 해제
         blockRepository.findMemberBlockedList(member.getMemberNo()).stream()
@@ -48,15 +44,10 @@ public class BlockService {
      */
     @Transactional
     public void unblockMember(Member member, Member blockMember) {
-        Optional<Block> blockOptional = member.getBlockedMemberBlock(blockMember);
-        boolean isAlreadyBlocked = blockOptional.isPresent();
+        List<Block> blockList = blockRepository.findBlock(member.getMemberNo(), blockMember.getMemberNo());
 
-        if(isAlreadyBlocked) {
-            Set<Block> blockList = member.getBlockList();
-            Block block = blockOptional.get();
-
-            blockRepository.delete(block);
-            blockList.remove(block);
+        if(!blockList.isEmpty()) {
+            member.getBlockList().remove(blockList.get(0));
         }
     }
 

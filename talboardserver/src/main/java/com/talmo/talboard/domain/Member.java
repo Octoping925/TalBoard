@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -41,7 +42,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blockId.member")
+    @OneToMany(mappedBy = "blockId.member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Block> blockList = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
