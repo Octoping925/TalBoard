@@ -1,8 +1,7 @@
 package com.talmo.talboard.service;
 
-import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.UpdatePostVO;
+import com.talmo.talboard.domain.vo.PostUpdateVO;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +15,6 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long create(Post post) {
-        postRepository.save(post);
-        return post.getPost_no();
-    }
-
-    @Transactional
     public Post findOne(Long postNo) {
         Post post = postRepository.findOne(postNo);
 
@@ -32,10 +25,20 @@ public class PostService {
         return post;
     }
 
-//    @Transactional
-//    public void updatePost(Post post, UpdatePostVO vo) {
-//        if(vo.getTitle() != null && vo.getContext() != null) {
-//            post.update(vo, vo.getMemberNo());
-//        }
-//    }
+    @Transactional
+    public Long create(Post post) {
+        postRepository.save(post);
+        return post.getPost_no();
+    }
+
+    @Transactional
+    public void update(Post post, PostUpdateVO vo) {
+        post.update(vo);
+    }
+
+    @Transactional
+    public void delete(Post post) {
+        post.delete();
+    }
+
 }

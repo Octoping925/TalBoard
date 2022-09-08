@@ -2,7 +2,7 @@ package com.talmo.talboard.domain;
 
 import com.sun.istack.NotNull;
 import com.talmo.talboard.domain.vo.PostCreateVO;
-import com.talmo.talboard.domain.vo.UpdatePostVO;
+import com.talmo.talboard.domain.vo.PostUpdateVO;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -49,9 +49,13 @@ public class Post {
         return post;
     }
 
-    public static Post update(Long postNo) {
-        Post post = new Post();
-        return post;
+    public void update(PostUpdateVO vo) {
+        this.title = vo.getTitle();
+        this.context = vo.getContext();
+    }
+
+    public void delete() {
+        this.delete_yn = "Y";
     }
 
 }

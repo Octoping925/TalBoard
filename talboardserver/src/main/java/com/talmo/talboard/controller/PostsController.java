@@ -1,13 +1,11 @@
 package com.talmo.talboard.controller;
 
+import com.sun.xml.bind.v2.TODO;
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.DetailPostVO;
-import com.talmo.talboard.domain.vo.ListPostVO;
-import com.talmo.talboard.domain.vo.PostCreateVO;
-import com.talmo.talboard.domain.vo.UpdatePostVO;
+import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
@@ -103,11 +101,18 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 수정 실패")
     })
     @PatchMapping("/posts/{post_no}")
-    public ResponseEntity<Map<String, Object>> updatePost(@PathVariable(name = "post_no") Long postNo, Member member) {
+    public ResponseEntity<Map<String, Object>> updatePost(@PathVariable(name = "post_no") Long postNo, PostUpdateVO vo) {
         try {
-            Post post = Post.update(postNo);
+            Post post = postRepository.findOne(postNo);
+            postService.update(post, vo);
+            /*
+                TODO
+                데이터 유효성 검사 -> ex) title이 "" 빈값이거나 기타 등등...
+                수정 권한 없음 -> 작성자가 아닌 경우
+            */
+
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(post, "게시글 수정 성공"));
+                    .body(ResponseObject.create(null, "게시글 수정 성공"));
         }
         catch (IllegalStateException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
@@ -121,8 +126,17 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 삭제 실패")
     })
     @DeleteMapping("/posts/{post_no}")
-    public List<Post> deletePost() {
-        return null;
+    public ResponseEntity<Map<String, Object>> deletePost(@PathVariable(name = "post_no") Long postNo) {
+        try {
+            Post post = postRepository.findOne(postNo);
+            postService.delete(post);
+
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(null, "게시글 삭제 성공"));
+        }
+        catch (IllegalStateException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="게시글 추천/비추천 수 조회")
