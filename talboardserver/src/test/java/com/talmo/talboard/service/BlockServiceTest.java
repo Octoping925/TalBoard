@@ -1,10 +1,8 @@
 package com.talmo.talboard.service;
 
 import com.talmo.talboard.config.TestHelper;
-import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
-import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

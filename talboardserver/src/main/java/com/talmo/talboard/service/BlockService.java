@@ -3,7 +3,6 @@ package com.talmo.talboard.service;
 import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.repository.BlockRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +47,11 @@ public class BlockService {
             block.unblock();
             blockRepository.delete(block);
         }
+    }
+
+    @Transactional
+    public void unblockMember(Block block) {
+        blockRepository.delete(block);
     }
 
 }
