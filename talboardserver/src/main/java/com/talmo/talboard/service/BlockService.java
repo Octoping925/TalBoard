@@ -41,7 +41,7 @@ public class BlockService {
      */
     @Transactional
     public void unblockMember(Member member, Member blockMember) {
-        Block block = blockRepository.find(member, blockMember);
+        Block block = blockRepository.findOne(member, blockMember);
 
         if(block != null) {
             block.unblock();

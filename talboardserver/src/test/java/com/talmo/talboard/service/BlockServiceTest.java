@@ -38,8 +38,8 @@ class BlockServiceTest {
         blockService.cleanMember(member2);
 
         // then
-        assertNull(blockRepository.find(member1, member2));
-        assertNull(blockRepository.find(member2, member3));
+        assertNull(blockRepository.findOne(member1, member2));
+        assertNull(blockRepository.findOne(member2, member3));
         assertFalse(member1.getBlockMembers().contains(member2));
 
         assertTrue(member2.getBlockList().isEmpty());
@@ -59,7 +59,7 @@ class BlockServiceTest {
         blockService.blockMember(member, member2);
 
         // then
-        assertNotNull(blockRepository.find(member, member2));
+        assertNotNull(blockRepository.findOne(member, member2));
         assertEquals(1, member.getBlockList().size());
         assertTrue(member.isBlockMember(member2));
         assertTrue(member.getBlockMembers().contains(member2));
@@ -79,7 +79,7 @@ class BlockServiceTest {
         blockService.blockMember(member, member2);
 
         // then
-        assertNotNull(blockRepository.find(member, member2));
+        assertNotNull(blockRepository.findOne(member, member2));
         assertEquals(1, member.getBlockList().size());
         assertEquals(1, member2.getBlockedList().size());
         assertTrue(member.getBlockMembers().contains(member2));
@@ -99,7 +99,7 @@ class BlockServiceTest {
         blockService.unblockMember(member, member2);
 
         // then
-        assertNull(blockRepository.find(member, member2));
+        assertNull(blockRepository.findOne(member, member2));
         assertTrue(member.getBlockList().isEmpty());
         assertTrue(member2.getBlockedList().isEmpty());
         assertFalse(member.isBlockMember(member2));
@@ -117,7 +117,7 @@ class BlockServiceTest {
         blockService.unblockMember(member, member2);
 
         // then
-        assertNull(blockRepository.find(member, member2));
+        assertNull(blockRepository.findOne(member, member2));
         assertTrue(member.getBlockList().isEmpty());
         assertTrue(member2.getBlockedList().isEmpty());
     }

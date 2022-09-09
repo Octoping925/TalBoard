@@ -1,17 +1,13 @@
 package com.talmo.talboard.domain.vo;
 
-import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-public class DetailPostVO {
+public class PostDetailVO {
     @ApiModelProperty(value = "멤버 번호", required = true)
     Long member_no;
     @ApiModelProperty(value = "게시글 번호", required = true)
@@ -24,7 +20,7 @@ public class DetailPostVO {
     String create_date;
 
 
-    public DetailPostVO(Post post) {
+    public PostDetailVO(Post post) {
         this.member_no = post.getMember().getMemberNo();
         this.post_no = post.getPost_no();
         this.title = post.getTitle();

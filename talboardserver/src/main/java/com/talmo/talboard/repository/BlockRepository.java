@@ -22,7 +22,7 @@ public class BlockRepository {
         em.remove(block);
     }
 
-    public Block find(Member member, Member blockMember) {
+    public Block findOne(Member member, Member blockMember) {
         return em.find(Block.class, new BlockId(member, blockMember));
     }
 

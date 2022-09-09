@@ -235,8 +235,8 @@ public class MemberController {
             List<Post> postList = member.getPosts();
 
             List<PostInfoVO> postListVO = postList.stream()
-                .map(post -> new PostInfoVO(member.getMemberNo(), post))
-                .collect(Collectors.toList());
+                    .map(post -> new PostInfoVO(member.getMemberNo(), post))
+                    .collect(Collectors.toList());
 
             return ResponseEntity.ok()
                 .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));

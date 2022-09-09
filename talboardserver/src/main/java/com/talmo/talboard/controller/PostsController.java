@@ -1,6 +1,5 @@
 package com.talmo.talboard.controller;
 
-import com.sun.xml.bind.v2.TODO;
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Member;
@@ -61,11 +60,11 @@ public class PostsController {
     @GetMapping("/posts")
     public ResponseEntity<Map<String, Object>> getAllPosts() {
         List<Post> post = postRepository.findAll();
-        List<ListPostVO> listPostVO = post.stream().map(ListPostVO::new)
+        List<PostListVO> postListVO = post.stream().map(PostListVO::new)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()
-                .body(ResponseObject.create(listPostVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+                .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
     }
     
     @ApiOperation(value="게시글 상세 조회")
@@ -74,10 +73,9 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 상세 조회 실패")
     })
     @GetMapping("/posts/{post_no}")
-    public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") String post_no) {
+    public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") Long postNo) {
         try {
-            Long postNo = Long.parseLong(post_no);
-            DetailPostVO vo = new DetailPostVO(postService.findOne(postNo));
+            PostDetailVO vo = new PostDetailVO(postService.findOne(postNo));
 
             return ResponseEntity.ok()
                     .body(ResponseObject.create(vo, "게시글 조회 성공"));

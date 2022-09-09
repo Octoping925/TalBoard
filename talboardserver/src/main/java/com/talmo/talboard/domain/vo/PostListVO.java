@@ -5,11 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-public class ListPostVO {
+public class PostListVO {
     @ApiModelProperty(value = "멤버 번호")
     Long memberNo;
     @ApiModelProperty(value = "글 번호")
@@ -19,7 +17,7 @@ public class ListPostVO {
     @ApiModelProperty(value = "작성 날짜")
     String create_date;
 
-    public ListPostVO(Post post) {
+    public PostListVO(Post post) {
         this.memberNo = post.getMember().getMemberNo();
         this.post_no = post.getPost_no();
         this.title = post.getTitle();
