@@ -7,13 +7,15 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Embeddable
 public class BlockId implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     Member member;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     Member blockedMember;
 
     protected BlockId() {}

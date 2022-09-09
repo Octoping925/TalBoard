@@ -19,12 +19,10 @@ public class BlockService {
     @Transactional
     public void cleanMember(Member member) {
         // 특정 회원이 차단한 회원을 전부 차단 해제
-        member.getBlockList().clear();
+        member.getBlockList().forEach(block -> unblockMember(member, block.getBlockedMember()));
 
         // 특정 회원을 차단한 회원의 차단을 전부 해제
-        blockRepository.findMemberBlockedList(member.getMemberNo()).stream()
-            .map(Block::getMember)
-            .forEach(mem -> unblockMember(mem, member));
+        member.getBlockedList().forEach(block -> unblockMember(block.getMember(), member));
     }
 
     /**
@@ -44,10 +42,11 @@ public class BlockService {
      */
     @Transactional
     public void unblockMember(Member member, Member blockMember) {
-        List<Block> blockList = blockRepository.findBlock(member.getMemberNo(), blockMember.getMemberNo());
+        Block block = blockRepository.find(member, blockMember);
 
-        if(!blockList.isEmpty()) {
-            member.getBlockList().remove(blockList.get(0));
+        if(block != null) {
+            block.unblock();
+            blockRepository.delete(block);
         }
     }
 

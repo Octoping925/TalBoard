@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -41,16 +40,13 @@ class BlockServiceTest {
         blockService.cleanMember(member2);
 
         // then
-//        assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
-        assertTrue(member1.getBlockList().stream()
-                .map(Block::getBlockedMember)
-                .map(Member::getMemberNo)
-                .noneMatch(memberNo -> Objects.equals(memberNo, memberNo2)));
+        assertNull(blockRepository.find(member1, member2));
+        assertNull(blockRepository.find(member2, member3));
+        assertFalse(member1.getBlockMembers().contains(member2));
 
-        assertTrue(blockRepository.findMemberBlockedList(memberNo2).isEmpty());
-
-//        assertTrue(blockRepository.findBlock(memberNo2, memberNo3).isEmpty());
         assertTrue(member2.getBlockList().isEmpty());
+        assertTrue(member2.getBlockedList().isEmpty());
+        assertFalse(member3.getBlockedMembers().contains(member2));
     }
 
     @Test
@@ -58,14 +54,18 @@ class BlockServiceTest {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
-        Long memberNo = memberService.join(member);
-        Long memberNo2 = memberService.join(member2);
+        memberService.join(member);
+        memberService.join(member2);
 
         // when
         blockService.blockMember(member, member2);
 
         // then
-        assertFalse(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
+        assertNotNull(blockRepository.find(member, member2));
+        assertEquals(1, member.getBlockList().size());
+        assertTrue(member.isBlockMember(member2));
+        assertTrue(member.getBlockMembers().contains(member2));
+        assertTrue(member2.getBlockedMembers().contains(member));
     }
 
     @Test
@@ -81,10 +81,11 @@ class BlockServiceTest {
         blockService.blockMember(member, member2);
 
         // then
+        assertNotNull(blockRepository.find(member, member2));
         assertEquals(1, member.getBlockList().size());
-        assertTrue(member.getBlockList().stream()
-            .map(Block::getBlockedMember)
-            .anyMatch(blockMember -> blockMember.equals(member2)));
+        assertEquals(1, member2.getBlockedList().size());
+        assertTrue(member.getBlockMembers().contains(member2));
+        assertTrue(member2.getBlockedMembers().contains(member));
     }
 
     @Test
@@ -92,16 +93,18 @@ class BlockServiceTest {
         // given
         Member member = TestHelper.createMember(1);
         Member member2 = TestHelper.createMember(2);
-        Long memberNo = memberService.join(member);
-        Long memberNo2 = memberService.join(member2);
+        memberService.join(member);
+        memberService.join(member2);
         blockService.blockMember(member, member2);
 
         // when
         blockService.unblockMember(member, member2);
 
         // then
-        assertTrue(blockRepository.findBlock(memberNo, memberNo2).isEmpty());
+        assertNull(blockRepository.find(member, member2));
         assertTrue(member.getBlockList().isEmpty());
+        assertTrue(member2.getBlockedList().isEmpty());
+        assertFalse(member.isBlockMember(member2));
     }
 
     @Test
@@ -116,6 +119,8 @@ class BlockServiceTest {
         blockService.unblockMember(member, member2);
 
         // then
-        assertEquals(0, member.getBlockList().size());
+        assertNull(blockRepository.find(member, member2));
+        assertTrue(member.getBlockList().isEmpty());
+        assertTrue(member2.getBlockedList().isEmpty());
     }
 }

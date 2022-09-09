@@ -15,8 +15,9 @@ public class Block {
     private LocalDateTime createDate;
 
     //==연관관계 메서드==//
-    private void setMember(Member member) {
-        member.getBlockList().add(this);
+    public void unblock() {
+        this.getMember().getBlockList().remove(this);
+        this.getBlockedMember().getBlockedList().remove(this);
     }
 
     //==생성 메서드==//
@@ -31,7 +32,8 @@ public class Block {
 
     public static Block createBlock(Member member, Member blockMember) {
         Block block = new Block(member, blockMember);
-        block.setMember(member);
+        member.getBlockList().add(block);
+        blockMember.getBlockedList().add(block);
         return block;
     }
 

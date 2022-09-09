@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -42,8 +43,11 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blockId.member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "blockId.member")
     private Set<Block> blockList = new HashSet<>();
+
+    @OneToMany(mappedBy = "blockId.blockedMember")
+    private Set<Block> blockedList = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
     private List<Notice> notices = new ArrayList<>();
@@ -119,12 +123,28 @@ public class Member {
      * @return 차단 여부
      */
     public boolean isBlockMember(Member member) {
-        return blockList.stream().map(Block::getBlockedMember)
-            .anyMatch(blockedMember -> blockedMember.equals(member));
+        return blockList.stream()
+                .map(Block::getBlockedMember)
+                .anyMatch(blockedMember -> blockedMember.equals(member));
     }
 
-    public Optional<Block> getBlockedMemberBlock(Member blockedMember) {
-        return blockList.stream().filter(block -> block.getBlockedMember().equals(blockedMember)).findAny();
+    /**
+     * 자신이 차단한 회원의 HashSet을 반환
+     */
+    public Set<Member> getBlockMembers() {
+        return this.getBlockList().stream()
+                .map(Block::getBlockedMember)
+                .collect(Collectors.toSet());
     }
+
+    /**
+     * 자신을 차단한 회원의 HashSet을 반환
+     */
+    public Set<Member> getBlockedMembers() {
+        return this.getBlockedList().stream()
+                .map(Block::getMember)
+                .collect(Collectors.toSet());
+    }
+
 
 }
