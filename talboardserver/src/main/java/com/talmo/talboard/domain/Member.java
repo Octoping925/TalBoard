@@ -44,11 +44,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = new ArrayList<>();
 
-    protected Member() {
-        this.adminYn = false;
-        this.resignYn = false;
-        this.registDate = LocalDateTime.now();
-    }
+    private Member() {}
 
     private Member(String id, String password, String emailAddress) throws IllegalArgumentException {
         this.loginInfo = new LoginInfo(id, password, emailAddress);
