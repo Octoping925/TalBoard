@@ -1,6 +1,7 @@
 package com.talmo.talboard.domain.vo;
 
 import com.talmo.talboard.domain.Post;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,10 @@ import lombok.Setter;
 public class PostDetailVO {
     @ApiModelProperty(value = "멤버 번호", required = true)
     Long member_no;
+
+    @ApiModelProperty(value = "멤버 아이디", required = true)
+    String member_id;
+
     @ApiModelProperty(value = "게시글 번호", required = true)
     Long post_no;
     @ApiModelProperty(value = "게시글 제목", required = true)
@@ -22,6 +27,7 @@ public class PostDetailVO {
 
     public PostDetailVO(Post post) {
         this.member_no = post.getMember().getMemberNo();
+        this.member_id = post.getMember().getId();
         this.post_no = post.getPost_no();
         this.title = post.getTitle();
         this.context = post.getContext();
