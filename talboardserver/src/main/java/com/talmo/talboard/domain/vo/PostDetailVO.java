@@ -17,13 +17,15 @@ public class PostDetailVO {
 
     @ApiModelProperty(value = "게시글 번호", required = true)
     Long post_no;
+
     @ApiModelProperty(value = "게시글 제목", required = true)
     String title;
+
     @ApiModelProperty(value = "게시글 내용", required = true)
     String context;
+
     @ApiModelProperty(value = "작성일자", required = true)
     String create_date;
-
 
     public PostDetailVO(Post post) {
         this.member_no = post.getMember().getMemberNo();
