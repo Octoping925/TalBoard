@@ -44,7 +44,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = new ArrayList<>();
 
-    private Member() {}
+    protected Member() {}
 
     private Member(String id, String password, String emailAddress) throws IllegalArgumentException {
         this.loginInfo = new LoginInfo(id, password, emailAddress);

@@ -31,7 +31,7 @@ public class Post {
     @NotNull
     private LocalDateTime create_date;
 
-    private Post() {}
+    protected Post() {}
 
     private Post(Member member, String title, String context) {
         this.member = member;
