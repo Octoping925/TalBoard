@@ -59,8 +59,8 @@ public class PostsController {
     })
     @GetMapping("/posts")
     public ResponseEntity<Map<String, Object>> getAllPosts() {
-        List<Post> post = postRepository.findAll();
-        List<PostListVO> postListVO = post.stream().map(PostListVO::new)
+        List<Post> posts = postRepository.findAll();
+        List<PostListVO> postListVO = posts.stream().map(PostListVO::new)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()
@@ -213,14 +213,25 @@ public class PostsController {
         return null;
     }
 
-    @ApiOperation(value="게시글 검색")
+    @ApiOperation(value="게시글 조건 검색")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK : 게시글 검색 성공"),
-            @ApiResponse(code = 404, message = "Not Found : 게시글 검색 실패")
+            @ApiResponse(code = 200, message = "OK : 게시글 조건 검색 성공"),
+            @ApiResponse(code = 404, message = "Not Found : 게시글 조건 검색 실패")
     })
     @GetMapping("/posts/search")
-    public ResponseEntity<Map<String, Object>> getPost() {
-        return null;
+    public ResponseEntity<Map<String, Object>> getPost(PostRequirementVO vo) {
+        try {
+            List<Post> posts = postService.findRequirementsAll(vo);
+            List<PostListVO> postListVO = posts.stream()
+                    .map(post -> new PostListVO(post)) /*.map(PostListVO::new)*/
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(postListVO, "게시글 조건 검색 성공"));
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="신고된 글 목록 조회")
