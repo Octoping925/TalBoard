@@ -75,6 +75,7 @@ public class PostsController {
     @GetMapping("/posts/{post_no}")
     public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") Long postNo) {
         try {
+            // TODO: N+1 문제 발생 중, 해결 필요
             PostDetailVO vo = new PostDetailVO(postService.findOne(postNo));
 
             return ResponseEntity.ok()

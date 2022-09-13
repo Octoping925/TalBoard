@@ -7,12 +7,12 @@ import javax.persistence.*;
 @Entity
 public class Notice {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notice_no")
+    @Column(name = "noticeNo")
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "memberNo")
     private Member member;
 
     @NotNull

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @Getter
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_no")
     private Long memberNo;
 
     @NotNull

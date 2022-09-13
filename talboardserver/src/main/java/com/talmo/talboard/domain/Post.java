@@ -16,7 +16,7 @@ public class Post {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "memberNo")
     private Member member;
 
     @NotNull

@@ -234,8 +234,8 @@ public class MemberController {
             Member member = memberRepository.findOne(vo.getMemberNo());
             List<Post> postList = member.getPosts();
 
-            List<PostInfoVO> postListVO = postList.stream()
-                    .map(post -> new PostInfoVO(member.getMemberNo(), post))
+            List<PostListVO> postListVO = postList.stream()
+                    .map(PostListVO::new)
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok()

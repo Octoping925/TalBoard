@@ -5,11 +5,11 @@ import javax.persistence.*;
 @Entity
 public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_no")
+    @Column(name = "commentNo")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "memberNo")
     private Member member;
 
 }

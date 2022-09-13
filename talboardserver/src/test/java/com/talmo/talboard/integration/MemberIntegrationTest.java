@@ -14,8 +14,8 @@ import com.talmo.talboard.domain.vo.MemberFindPasswordVO;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import com.talmo.talboard.domain.vo.MemberNoVO;
 import com.talmo.talboard.domain.vo.MemberResignVO;
-import com.talmo.talboard.domain.vo.PostInfoVO;
 import com.talmo.talboard.config.ExceptionConstants;
+import com.talmo.talboard.domain.vo.PostListVO;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.BlockService;
@@ -366,7 +366,7 @@ class MemberIntegrationTest {
 
         // when
         Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
+        List<PostListVO> postList = (List<PostListVO>) body.get("data");
         String message = (String) body.get("message");
 
         // then
@@ -386,7 +386,7 @@ class MemberIntegrationTest {
 
         // when
         Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostInfoVO> postList = (List<PostInfoVO>) body.get("data");
+        List<PostListVO> postList = (List<PostListVO>) body.get("data");
         String message = (String) body.get("message");
 
         // then
