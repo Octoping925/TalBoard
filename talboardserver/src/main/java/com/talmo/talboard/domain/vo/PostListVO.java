@@ -10,17 +10,20 @@ import lombok.Setter;
 public class PostListVO {
     @ApiModelProperty(value = "멤버 번호")
     Long memberNo;
+    @ApiModelProperty(value = "멤버 아이디")
+    String memberId;
     @ApiModelProperty(value = "글 번호")
-    Long post_no;
+    Long postNo;
     @ApiModelProperty(value = "글 제목")
     String title;
     @ApiModelProperty(value = "작성 날짜")
-    String create_date;
+    String createDate;
 
     public PostListVO(Post post) {
         this.memberNo = post.getMember().getMemberNo();
-        this.post_no = post.getPost_no();
+        this.memberId = post.getMember().getId();
+        this.postNo = post.getPostNo();
         this.title = post.getTitle();
-        this.create_date = post.getCreate_date().toString();
+        this.createDate = post.getCreateDate().toString();
     }
 }

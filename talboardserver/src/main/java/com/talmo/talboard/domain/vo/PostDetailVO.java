@@ -1,7 +1,6 @@
 package com.talmo.talboard.domain.vo;
 
 import com.talmo.talboard.domain.Post;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,30 +8,30 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostDetailVO {
-    @ApiModelProperty(value = "멤버 번호", required = true)
-    Long member_no;
+    @ApiModelProperty(value = "멤버 번호")
+    Long memberNo;
 
-    @ApiModelProperty(value = "멤버 아이디", required = true)
-    String member_id;
+    @ApiModelProperty(value = "멤버 아이디")
+    String memberId;
 
-    @ApiModelProperty(value = "게시글 번호", required = true)
-    Long post_no;
+    @ApiModelProperty(value = "게시글 번호")
+    Long postNo;
 
-    @ApiModelProperty(value = "게시글 제목", required = true)
+    @ApiModelProperty(value = "게시글 제목")
     String title;
 
-    @ApiModelProperty(value = "게시글 내용", required = true)
+    @ApiModelProperty(value = "게시글 내용")
     String context;
 
-    @ApiModelProperty(value = "작성일자", required = true)
-    String create_date;
+    @ApiModelProperty(value = "작성일자")
+    String createDate;
 
     public PostDetailVO(Post post) {
-        this.member_no = post.getMember().getMemberNo();
-        this.member_id = post.getMember().getId();
-        this.post_no = post.getPost_no();
+        this.memberNo = post.getMember().getMemberNo();
+        this.memberId = post.getMember().getId();
+        this.postNo = post.getPostNo();
         this.title = post.getTitle();
         this.context = post.getContext();
-        this.create_date = post.getCreate_date().toString();
+        this.createDate = post.getCreateDate().toString();
     }
 }

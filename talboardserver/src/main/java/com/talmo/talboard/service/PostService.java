@@ -18,7 +18,7 @@ public class PostService {
     public Post findOne(Long postNo) {
         Post post = postRepository.findOne(postNo);
 
-        if(post.getDelete_yn().equals("Y")) {
+        if(post.getDeleteYn().equals("Y")) {
             throw new IllegalStateException("게시글 상세 조회 실패");
         }
 
@@ -28,7 +28,7 @@ public class PostService {
     @Transactional
     public Long create(Post post) {
         postRepository.save(post);
-        return post.getPost_no();
+        return post.getPostNo();
     }
 
     @Transactional

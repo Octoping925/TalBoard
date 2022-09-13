@@ -16,7 +16,6 @@ import com.talmo.talboard.domain.vo.MemberNoVO;
 import com.talmo.talboard.domain.vo.MemberResignVO;
 import com.talmo.talboard.domain.vo.PostInfoVO;
 import com.talmo.talboard.config.ExceptionConstants;
-import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.BlockService;
@@ -372,9 +371,9 @@ class MemberIntegrationTest {
 
         // then
         assertEquals(2, postList.size());
-        assertEquals(postList.get(0).getPost_no(), post.getPost_no());
+        assertEquals(postList.get(0).getPostNo(), post.getPostNo());
         assertEquals(postList.get(0).getTitle(), post.getTitle());
-        assertEquals(postList.get(1).getPost_no(), post2.getPost_no());
+        assertEquals(postList.get(1).getPostNo(), post2.getPostNo());
         assertEquals(postList.get(1).getTitle(), post2.getTitle());
         assertEquals(ResponseConstants.SEARCH_SUCCESS_MESSAGE, message);
     }

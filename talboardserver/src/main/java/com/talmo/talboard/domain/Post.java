@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_no;
+    private Long postNo;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,10 +26,10 @@ public class Post {
     private String context;
 
     @NotNull
-    private String delete_yn;
+    private String deleteYn;
 
     @NotNull
-    private LocalDateTime create_date;
+    private LocalDateTime createDate;
 
     protected Post() {}
 
@@ -37,8 +37,8 @@ public class Post {
         this.member = member;
         this.title = title;
         this.context = context;
-        this.delete_yn = "N";
-        this.create_date = LocalDateTime.now();
+        this.deleteYn = "N";
+        this.createDate = LocalDateTime.now();
     }
 
     public static Post create(PostCreateVO vo, Member member) {
@@ -53,7 +53,7 @@ public class Post {
     }
 
     public void delete() {
-        this.delete_yn = "Y";
+        this.deleteYn = "Y";
     }
 
 }

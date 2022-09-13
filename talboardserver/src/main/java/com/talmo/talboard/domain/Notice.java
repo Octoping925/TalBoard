@@ -17,7 +17,7 @@ public class Notice {
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_no")
+    @JoinColumn(name = "postNo")
     private Post post;
 
     @NotNull

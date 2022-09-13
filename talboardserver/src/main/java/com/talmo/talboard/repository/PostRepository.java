@@ -18,7 +18,7 @@ public class PostRepository {
     }
 
     public List<Post> findAll() {
-        return em.createQuery("SELECT p FROM Post p WHERE p.delete_yn = 'N'")
+        return em.createQuery("SELECT p FROM Post p WHERE p.deleteYn = 'N'")
                 .getResultList();
     }
 

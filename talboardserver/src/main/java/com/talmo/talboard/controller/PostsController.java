@@ -41,9 +41,9 @@ public class PostsController {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Post post = Post.create(vo, member);
-            Long post_no = postService.create(post);
+            Long postNo = postService.create(post);
             return ResponseEntity.ok()
-                    .body(ResponseObject.create(post_no, "게시글 등록 성공"));
+                    .body(ResponseObject.create(postNo, "게시글 등록 성공"));
         }
         catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -218,7 +218,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 검색 실패")
     })
     @GetMapping("/posts/search")
-    public List<Post> getPost() {
+    public ResponseEntity<Map<String, Object>> getPost() {
         return null;
     }
 
