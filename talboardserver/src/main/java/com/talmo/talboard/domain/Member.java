@@ -29,19 +29,19 @@ public class Member {
     private LocalDateTime registDate;
 
     @OneToMany(mappedBy = "member")
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts = Collections.synchronizedList(new ArrayList<>());
 
     @OneToMany(mappedBy = "blockId.member")
-    private Set<Block> blockList = new HashSet<>();
+    private Set<Block> blockList = Collections.synchronizedSet(new HashSet<>());
 
     @OneToMany(mappedBy = "blockId.blockedMember")
-    private Set<Block> blockedList = new HashSet<>();
+    private Set<Block> blockedList = Collections.synchronizedSet(new HashSet<>());
 
     @OneToMany(mappedBy = "member")
-    private List<Notice> notices = new ArrayList<>();
+    private List<Notice> notices = Collections.synchronizedList(new ArrayList<>());
 
     @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = Collections.synchronizedList(new ArrayList<>());
 
     protected Member() {}
 

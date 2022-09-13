@@ -26,16 +26,6 @@ public class BlockRepository {
         return em.find(Block.class, new BlockId(member, blockMember));
     }
 
-    @Deprecated
-    public List<Block> findBlock(Long memberNo, Long blockMemberNo) {
-        return em.createQuery("SELECT b FROM Block b " +
-                        "WHERE b.blockId.member.memberNo = :memberNo" +
-                        " AND b.blockId.blockedMember.memberNo = :blockMemberNo", Block.class)
-                .setParameter("memberNo", memberNo)
-                .setParameter("blockMemberNo", blockMemberNo)
-                .getResultList();
-    }
-
     /**
      * @deprecated 해당 멤버가 차단한 유저들이 DB에 제대로 들어있는지 확인 용으로만 사용, Member::getBlockList 사용 권장
      */
