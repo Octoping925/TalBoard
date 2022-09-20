@@ -1,14 +1,17 @@
 package com.talmo.talboard.domain;
 
 import com.sun.istack.NotNull;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class Notice {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "noticeNo")
-    private Long id;
+    @Column
+    private Long noticeNo;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -16,9 +19,9 @@ public class Notice {
     private Member member;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postNo")
-    private Post post;
+    @OneToOne
+    @JoinColumn(name="commentNo")
+    private Comment comment;
 
     @NotNull
     private boolean readYn;
@@ -29,23 +32,22 @@ public class Notice {
     //==생성 로직==//
     protected Notice() {}
 
-    private Notice(Member member, Post post) {
+    private Notice(Member member, Comment comment) {
         this.member = member;
-        this.post = post;
+        this.comment = comment;
         this.readYn = false;
         this.createDate = LocalDateTime.now();
     }
 
     //==비즈니스 로직==//
-    public static Notice createNotice(Member member, Post post) {
-        Notice notice = new Notice(member, post);
+    public static Notice createNotice(Member member, Comment comment) {
+        Notice notice = new Notice(member, comment);
         member.getNotices().add(notice);
         return notice;
     }
 
     public void read() {
         this.readYn = true;
-        this.member.getNotices().remove(this);
     }
 
 

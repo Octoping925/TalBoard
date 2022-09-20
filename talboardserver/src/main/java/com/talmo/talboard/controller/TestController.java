@@ -1,11 +1,13 @@
 package com.talmo.talboard.controller;
 
 import com.talmo.talboard.domain.Member;
+import com.talmo.talboard.domain.Notice;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.MemberJoinVO;
 import com.talmo.talboard.domain.vo.PostCreateVO;
 import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
+import com.talmo.talboard.service.NoticeService;
 import com.talmo.talboard.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ public class TestController {
     private final MemberService memberService;
     private final BlockService blockService;
     private final PostService postService;
+    private final NoticeService noticeService;
 
     @GetMapping("/createTestData")
     public void createTestData() {
@@ -56,6 +59,14 @@ public class TestController {
         /* Create Test Comment */
 
 
+        /* Create Test Notice */
+//        Notice notice = Notice.createNotice(post, member2);
+//        Notice notice2 = Notice.createNotice(post2, member3);
+//        Notice notice3 = Notice.createNotice(post, member3);
+//        noticeService.create(notice);
+//        noticeService.create(notice2);
+//        noticeService.create(notice3);
+//        notice2.read();
     }
 
 }
