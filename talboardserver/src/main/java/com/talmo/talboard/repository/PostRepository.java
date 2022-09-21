@@ -23,6 +23,12 @@ public class PostRepository {
                 .getResultList();
     }
 
+//    public List<Post> findAllExceptBlocked(Long memberNo) {
+//        return em.createQuery("select p from Post p where not p.member.memberNo in (select b.blockId.blockedMember.memberNo from Block b where b.blockId.member.memberNo = :memberNo)")
+//                .setParameter("memberNo", memberNo)
+//                .getResultList();
+//    }
+
     public Post findOne(Long postNo) {
         Post post = em.find(Post.class, postNo);
         if(post == null){

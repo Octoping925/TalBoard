@@ -2,6 +2,7 @@ package com.talmo.talboard.controller;
 
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
+import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.vo.*;
@@ -17,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,15 +59,55 @@ public class PostsController {
     @ApiOperation(value="전체 게시글 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK : 전체 게시글 조회 성공"),
+            @ApiResponse(code = 404, message = "OK : 전체 게시글 조회 실패")
     })
     @GetMapping("/posts")
-    public ResponseEntity<Map<String, Object>> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        List<PostListVO> postListVO = posts.stream().map(PostListVO::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<Map<String, Object>> getAllPosts(MemberNoVO vo) {
+        try {
+            Set<Member> blockMembers = new HashSet<>();
 
-        return ResponseEntity.ok()
-                .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+            if(vo.getMemberNo() != null) {
+                Member member = memberRepository.findOne(vo.getMemberNo());
+                blockMembers.addAll(member.getBlockMembers());
+            }
+
+            List<PostListVO> postListVO = postRepository.findAll().stream()
+                    .filter(post -> !blockMembers.contains(post.getMember()))
+                    .map(PostListVO::new)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+
+//            if (vo.getMemberNo() == null) {
+//                List<Post> posts = postRepository.findAll();
+//                List<PostListVO> postListVO = posts.stream().map(PostListVO::new)
+//                        .collect(Collectors.toList());
+//                return ResponseEntity.ok()
+//                        .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+//            } else {
+//                /*
+//                    List<Post> posts = postRepository.findAllExceptBlocked(vo.getMemberNo());
+//                    List<PostListVO> postListVO = posts.stream().map(PostListVO::new)
+//                            .collect(Collectors.toList());
+//                */
+
+//                List<Post> posts = postRepository.findAll();
+//                Member member = memberRepository.findOne(vo.getMemberNo());
+//                Set<Member> blockMembers = member.getBlockMembers();
+//
+//                List<PostListVO> postListVO = posts.stream()
+//                        .filter(post -> !blockMembers.contains(post.getMember()))
+//                        .map(PostListVO::new)
+//                        .collect(Collectors.toList());
+//
+//                return ResponseEntity.ok()
+//                        .body(ResponseObject.create(postListVO, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+//            }
+        }
+        catch(NoPostFoundException e){
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
     
     @ApiOperation(value="게시글 상세 조회")

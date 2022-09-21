@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberNoVO {
-    @ApiModelProperty(value = "멤버 번호", required = true)
+    @ApiModelProperty(value = "멤버 번호")
     Long memberNo;
 }
