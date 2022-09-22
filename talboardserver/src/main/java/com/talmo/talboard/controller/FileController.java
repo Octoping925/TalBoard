@@ -24,11 +24,14 @@ import java.io.IOException;
 @Controller
 public class FileController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+//    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Autowired
     private FileService fileService;
 
+    @Autowired
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
     @PostMapping(value = "/files/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileService.saveFile(file);
