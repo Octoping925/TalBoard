@@ -2,14 +2,15 @@ package com.talmo.talboard.controller;
 
 import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
-import com.talmo.talboard.domain.Block;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
+import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
+import com.talmo.talboard.service.ReportService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostsController {
     private final PostService postService;
+    private final ReportService reportService;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
@@ -252,8 +254,16 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 사용자 또는 게시글 번호 조회 실패")
     })
     @PostMapping("/posts/{post_no}/report")
-    public List<Post> reportPost() {
-        return null;
+    public ResponseEntity<Map<String, Object>> reportPost(PostReportVO vo) {
+        try {
+            reportService.reportPost(vo);
+
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(null, ResponseConstants.REPORT_SUCCESS_MESSAGE));
+        }
+        catch (NoPostFoundException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ApiOperation(value="게시글 조건 검색")
