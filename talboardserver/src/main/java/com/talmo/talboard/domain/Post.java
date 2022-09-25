@@ -7,6 +7,9 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +33,9 @@ public class Post {
 
     @NotNull
     private LocalDateTime createDate;
+
+    @OneToMany(mappedBy = "reportId.reportedPost")
+    private List<Report> reports = Collections.synchronizedList(new ArrayList<>());
 
     protected Post() {}
 
