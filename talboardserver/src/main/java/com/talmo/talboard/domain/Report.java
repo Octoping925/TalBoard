@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Report {
     @EmbeddedId
-    private ReportPostId reportPost;
+    private ReportPostId reportPostId;
     private LocalDateTime reportDate;
 
     public Report(Member member, Post post) {
-        this.reportPost = new ReportPostId(member, post);
+        this.reportPostId = new ReportPostId(member, post);
         this.reportDate = LocalDateTime.now();
     }
 }

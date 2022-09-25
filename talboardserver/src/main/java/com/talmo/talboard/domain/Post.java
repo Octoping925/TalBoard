@@ -34,7 +34,7 @@ public class Post {
     @NotNull
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "reportId.reportedPost")
+    @OneToMany(mappedBy = "reportPostId.reportedPost")
     private List<Report> reports = Collections.synchronizedList(new ArrayList<>());
 
     protected Post() {}

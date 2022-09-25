@@ -43,7 +43,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = Collections.synchronizedList(new ArrayList<>());
 
-    @OneToMany(mappedBy = "reportId.reportedMember")
+    @OneToMany(mappedBy = "reportPostId.reportedMember")
     private List<Report> reports = Collections.synchronizedList(new ArrayList<>());
 
     protected Member() {}
