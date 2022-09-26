@@ -15,8 +15,8 @@ public class Report {
     private ReportPostId reportPostId;
     private LocalDateTime reportDate;
 
-    public Report(Member member, Post post) {
-        this.reportPostId = new ReportPostId(member, post);
+    public Report(Member member, Post reportPost) {
+        this.reportPostId = new ReportPostId(member, reportPost);
         this.reportDate = LocalDateTime.now();
     }
 }

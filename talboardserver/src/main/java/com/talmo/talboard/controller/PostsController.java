@@ -7,6 +7,7 @@ import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoPostFoundException;
+import com.talmo.talboard.exception.PostReportException;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
@@ -256,12 +257,15 @@ public class PostsController {
     @PostMapping("/posts/{post_no}/report")
     public ResponseEntity<Map<String, Object>> reportPost(PostReportVO vo) {
         try {
-            reportService.reportPost(vo);
+            Member member = memberRepository.findOne(vo.getMemberNo());
+            Post reportPost = postRepository.findOne(vo.getPostNo());
+
+            reportService.reportPost(member, reportPost);
 
             return ResponseEntity.ok()
                     .body(ResponseObject.create(null, ResponseConstants.REPORT_SUCCESS_MESSAGE));
         }
-        catch (NoPostFoundException e) {
+        catch (PostReportException e) {
             return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }

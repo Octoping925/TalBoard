@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.io.Serializable;
 
 @Getter
@@ -16,14 +15,15 @@ import java.io.Serializable;
 @Embeddable
 public class ReportPostId implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
-    Member reportedMember;
+    Member reportMember;
     @ManyToOne(fetch = FetchType.LAZY)
     Post reportedPost;
 
     protected ReportPostId() {}
 
-    public ReportPostId(Member reportedMember, Post reportedPost) {
-        this.reportedMember = reportedMember;
+    public ReportPostId(Member reportMember, Post reportedPost) {
+        this.reportMember = reportMember;
         this.reportedPost = reportedPost;
     }
+
 }

@@ -43,7 +43,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = Collections.synchronizedList(new ArrayList<>());
 
-    @OneToMany(mappedBy = "reportPostId.reportedMember")
+    @OneToMany(mappedBy = "reportPostId.reportMember")
     private List<Report> reports = Collections.synchronizedList(new ArrayList<>());
 
     protected Member() {}
@@ -135,5 +135,13 @@ public class Member {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * 해당 멤버가 해당 포스트를 신고한적 있는지 확인
+     */
+    public boolean isReportedPost(Member member) {
+        return reports.stream()
+                .map(report -> report.getReportMember())
+                .anyMatch(reportMember -> reportMember.equals(member));
+    }
 
 }
