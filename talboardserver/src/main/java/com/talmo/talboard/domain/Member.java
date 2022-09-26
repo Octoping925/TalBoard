@@ -57,7 +57,9 @@ public class Member {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Member) {
+        if(this == obj) return true;
+        if(obj == null) return false;
+        if(getClass() == obj.getClass()) {
             return Objects.equals(this.memberNo, ((Member) obj).getMemberNo());
         }
         return false;
