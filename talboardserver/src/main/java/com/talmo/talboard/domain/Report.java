@@ -19,4 +19,12 @@ public class Report {
         this.reportPostId = new ReportPostId(member, reportPost);
         this.reportDate = LocalDateTime.now();
     }
+
+    public Member getReportMember() {
+        return reportPostId.getReportMember();
+    }
+
+    public Post getReportedPost() {
+        return reportPostId.getReportedPost();
+    }
 }
