@@ -296,8 +296,9 @@ public class PostsController {
             @ApiResponse(code = 200, message = "OK : 신고된 글 목록 조회 성공"),
             @ApiResponse(code = 404, message = "Not Found : 신고된 글 목록 조회 실패")
     })
-    @GetMapping("/posts/report")
-    public List<Post> getAllReportedPosts() {
+    @GetMapping("/posts/search/report")
+    public ResponseEntity<Map<String, Object>> getAllReportPosts() {
+
         return null;
     }
 }

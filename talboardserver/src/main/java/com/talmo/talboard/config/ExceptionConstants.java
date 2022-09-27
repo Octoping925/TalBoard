@@ -20,5 +20,6 @@ public class ExceptionConstants {
 
     public static final String NOT_FOUND_POST_MESSAGE = "존재하지 않는 게시글";
     public static final String ALREADY_REPORT_POST_MESSAGE = "이미 신고한 게시글";
+    public static final String NOT_FOUND_REPORT_POST_MESSAGE = "신고된 게시글 조회 실패";
 
 }
