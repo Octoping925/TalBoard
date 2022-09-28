@@ -264,7 +264,7 @@ TalBoard의 게시글과 관련한 모든 API에 관련한 정보입니다.
 
 * **/posts/report** [POST] : 신고된 글 목록 조회
   - 매개변수
-    + member_no *(String, 필수)*  : 로그인에 필요한 아이디입니다.
+    + 없음
   - 응답
     + 200 - OK : 조회 성공
     + 404 - Not Found : 조회 실패

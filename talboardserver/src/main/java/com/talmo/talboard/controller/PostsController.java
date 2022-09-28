@@ -296,9 +296,18 @@ public class PostsController {
             @ApiResponse(code = 200, message = "OK : 신고된 글 목록 조회 성공"),
             @ApiResponse(code = 404, message = "Not Found : 신고된 글 목록 조회 실패")
     })
-    @GetMapping("/posts/search/report")
+    @GetMapping("/posts/report")
     public ResponseEntity<Map<String, Object>> getAllReportPosts() {
+        try {
+            List<PostReportListVO> postReportListVO = postRepository.findAllReportPosts().stream()
+                    .map(report -> new PostReportListVO(report))
+                    .collect(Collectors.toList());
 
-        return null;
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(postReportListVO, "신고된 글 목록 조회 성공"));
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 }

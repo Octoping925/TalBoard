@@ -2,6 +2,9 @@ package com.talmo.talboard.controller;
 
 import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.config.TestHelper;
+import com.talmo.talboard.domain.vo.PostReportVO;
+import com.talmo.talboard.exception.NoMemberFoundException;
+import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.PostService;
 import com.talmo.talboard.service.ReportService;
@@ -12,6 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,20 +37,18 @@ public class PostControllerTest {
 
     @Test
     void get_신고된게시글조회() throws Exception {
-        mockMvc.perform(get("/posts/search/report")
-                .param("memberNo", "1")
-                .contentType(MediaType.APPLICATION_JSON))
-
-            .andExpect(status().isOk());
+        mockMvc.perform(get("/posts/report")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     void get_신고된게시글조회실패() throws Exception {
-        mockMvc.perform(get("/posts/search/report")
-                .param("memberNo", "1")
-                .contentType(MediaType.APPLICATION_JSON))
+        doThrow(new NoPostFoundException()).when(postService).findAllReportPosts();
 
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.massage").value(ExceptionConstants.NOT_FOUND_REPORT_POST_MESSAGE));
+        mockMvc.perform(get("/posts/report")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.massage").value(ExceptionConstants.NOT_FOUND_REPORT_POST_MESSAGE));
     }
 }

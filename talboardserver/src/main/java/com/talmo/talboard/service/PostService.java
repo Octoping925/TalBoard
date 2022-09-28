@@ -1,6 +1,7 @@
 package com.talmo.talboard.service;
 
 import com.talmo.talboard.domain.Post;
+import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.PostRequirementVO;
 import com.talmo.talboard.domain.vo.PostUpdateVO;
 import com.talmo.talboard.repository.MemberRepository;
@@ -39,6 +40,11 @@ public class PostService {
         }
 
         throw new IllegalArgumentException("작성자 또는 제목을 검색 해주세요.");
+    }
+
+    @Transactional
+    public List<Report> findAllReportPosts() {
+        return postRepository.findAllReportPosts();
     }
 
     @Transactional

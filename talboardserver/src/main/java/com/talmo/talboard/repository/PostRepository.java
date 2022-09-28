@@ -1,7 +1,7 @@
 package com.talmo.talboard.repository;
 
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.PostRequirementVO;
+import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.exception.NoPostFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -47,6 +47,11 @@ public class PostRepository {
     public List<Post> searchByTitle(String title) {
         return em.createQuery("SELECT p FROM Post p WHERE p.title like :title")
                 .setParameter("title", "%" + title +"%")
+                .getResultList();
+    }
+
+    public List<Report> findAllReportPosts() {
+        return em.createQuery("SELECT r FROM Report r")
                 .getResultList();
     }
 
