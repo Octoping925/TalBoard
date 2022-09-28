@@ -40,6 +40,7 @@ public class Likes {
         this.member = member;
         this.post = post;
         this.likeYn = likeYn;
+        this.likeDate = LocalDateTime.now();
     }
 
     public static Likes likePost(Member member, Post post) {
