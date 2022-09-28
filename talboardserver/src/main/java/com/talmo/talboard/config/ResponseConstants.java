@@ -19,6 +19,8 @@ public class ResponseConstants {
     public static final String REPORT_SUCCESS_MESSAGE = "게시글 신고 성공";
     public static final String UNREPORT_SUCCESS_MESSAGE = "게시글 신고 취소 성공";
 
+    public static final String LIKES_SUCCESS_MESSAGE = "게시글 추천/비추천 성공";
+
 
 
 

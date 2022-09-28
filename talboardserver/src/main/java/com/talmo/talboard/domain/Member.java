@@ -38,6 +38,9 @@ public class Member {
     private Set<Block> blockedList = Collections.synchronizedSet(new HashSet<>());
 
     @OneToMany(mappedBy = "member")
+    private Set<Likes> likesList = Collections.synchronizedSet(new HashSet<>());
+
+    @OneToMany(mappedBy = "member")
     private List<Notice> notices = Collections.synchronizedList(new ArrayList<>());
 
     @OneToMany(mappedBy = "member")
@@ -142,6 +145,13 @@ public class Member {
         return reports.stream()
                 .map(report -> report.getReportMember())
                 .anyMatch(reportMember -> reportMember.equals(member));
+    }
+
+    /**
+     * 해당 멤버가 해당 포스트를 이미 추천/비추천 했는지 확인
+     */
+    public boolean isAlreadyLikedPost(Post post) {
+        return likesList.stream().anyMatch(likes -> likes.getPost().equals(post));
     }
 
 }

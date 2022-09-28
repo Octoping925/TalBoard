@@ -3,6 +3,10 @@ package com.talmo.talboard.domain;
 import com.sun.istack.NotNull;
 import com.talmo.talboard.domain.vo.PostCreateVO;
 import com.talmo.talboard.domain.vo.PostUpdateVO;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -34,6 +38,9 @@ public class Post {
     @NotNull
     private LocalDateTime createDate;
 
+    @OneToMany(mappedBy = "post")
+    private Set<Likes> likesList = Collections.synchronizedSet(new HashSet<>());
+
     @OneToMany(mappedBy = "reportPostId.reportedPost")
     private List<Report> reports = Collections.synchronizedList(new ArrayList<>());
 
@@ -60,6 +67,18 @@ public class Post {
 
     public void delete() {
         this.deleteYn = "Y";
+    }
+
+    public Map<String, Integer> getLikesDislikesCnt() {
+        Map<String, Integer> likesDislikes = new HashMap<>();
+
+        int likes = (int) this.likesList.stream().filter(Likes::isLikeYn).count();
+        int dislikes = this.likesList.size() - likes;
+
+        likesDislikes.put("likes", likes);
+        likesDislikes.put("dislikes", dislikes);
+
+        return likesDislikes;
     }
 
 }

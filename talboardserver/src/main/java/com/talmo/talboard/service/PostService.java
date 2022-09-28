@@ -1,9 +1,13 @@
 package com.talmo.talboard.service;
 
+import com.talmo.talboard.config.ExceptionConstants;
+import com.talmo.talboard.domain.Likes;
+import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.PostRequirementVO;
 import com.talmo.talboard.domain.vo.PostUpdateVO;
+import com.talmo.talboard.repository.LikesRepository;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public Post findOne(Long postNo) {
@@ -61,6 +66,17 @@ public class PostService {
     @Transactional
     public void delete(Post post) {
         post.delete();
+    }
+
+    @Transactional
+    public Long likeOrDislikePost(Member member, Post post, boolean likeYn) {
+        if(member.isAlreadyLikedPost(post)) {
+            throw new IllegalStateException(ExceptionConstants.ALREADY_LIKEDORDISLIKED_POST_MESSAGE);
+        }
+
+        Likes likes = Likes.create(member, post, likeYn);
+        likesRepository.save(likes);
+        return likes.getLikeNo();
     }
 
 }

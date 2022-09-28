@@ -6,6 +6,7 @@ import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.*;
+import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.exception.NoPostFoundException;
 import com.talmo.talboard.exception.PostReportException;
 import com.talmo.talboard.repository.MemberRepository;
@@ -186,23 +187,47 @@ public class PostsController {
 
     @ApiOperation(value="게시글 추천/비추천 수 조회")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK : 게시글 추천/비추천 수 조회 성공"),
-            @ApiResponse(code = 404, message = "Not Found : 게시글 추천/비추천 수 조회 실패")
+            @ApiResponse(code = 200, message = "OK : 조회 성공"),
+            @ApiResponse(code = 404, message = "Not Found : 존재하지 않는 게시글")
     })
     @GetMapping("/posts/{post_no}/like")
-    public List<Post> getLikeAndDislike() {
-        return null;
+    public ResponseEntity<Map<String, Object>> getLikeAndDislike(@PathVariable(name = "post_no") Long postNo) {
+        try {
+            Post post = postRepository.findOne(postNo);
+            Map<String, Integer> likesDislikesCnt = post.getLikesDislikesCnt();
+
+            return ResponseEntity.ok()
+                .body(ResponseObject.create(likesDislikesCnt, ResponseConstants.SEARCH_SUCCESS_MESSAGE));
+        }
+        catch (NoPostFoundException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="게시글 추천/비추천")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK : 게시글 추천/비추천 성공"),
-            @ApiResponse(code = 400, message = "Bad Request : 데이터 유효성 검사 실패"),
+            @ApiResponse(code = 400, message = "Bad Request : 이미 추천/비추천한 게시글"),
             @ApiResponse(code = 404, message = "Not Found : 게시글 추천/비추천 실패")
     })
     @PostMapping("/posts/{post_no}/like")
-    public List<Post> setLikeAndDislike() {
-        return null;
+    public ResponseEntity<Map<String, Object>> setLikeAndDislike(@PathVariable(name = "post_no") Long postNo, PostLikesVO vo) {
+        try {
+            Member member = memberRepository.findOne(vo.getMemberNo());
+            Post post = postRepository.findOne(postNo);
+
+            postService.likeOrDislikePost(member, post, vo.isLikeYn());
+
+            return ResponseEntity.ok()
+                .body(ResponseObject.create(null, ResponseConstants.LIKES_SUCCESS_MESSAGE));
+        }
+        catch (NoMemberFoundException | NoPostFoundException e) {
+            return new ResponseEntity<>(ResponseObject.create(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+        catch(IllegalStateException e) {
+            return ResponseEntity.badRequest()
+                .body(ResponseObject.create(null, e.getMessage()));
+        }
     }
 
     @ApiOperation(value="댓글 작성")
@@ -300,7 +325,7 @@ public class PostsController {
     public ResponseEntity<Map<String, Object>> getAllReportPosts() {
         try {
             List<PostReportListVO> postReportListVO = postRepository.findAllReportPosts().stream()
-                    .map(report -> new PostReportListVO(report))
+                    .map(PostReportListVO::new)
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok()
