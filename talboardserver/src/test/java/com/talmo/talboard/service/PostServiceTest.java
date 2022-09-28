@@ -4,7 +4,6 @@ import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
 import com.talmo.talboard.repository.LikesRepository;
-import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +39,8 @@ public class PostServiceTest {
         Assertions.assertFalse(member2.getLikesList().isEmpty());
         Assertions.assertFalse(post.getLikesList().isEmpty());
 
-        Assertions.assertTrue(member.getLikesList().stream().anyMatch(likes -> likes1.equals(likes.getLikeNo())));
-        Assertions.assertTrue(member2.getLikesList().stream().anyMatch(likes -> likes2.equals(likes.getLikeNo())));
+        Assertions.assertTrue(member.getLikesList().contains(likesRepository.findOne(likes1)));
+        Assertions.assertTrue(member2.getLikesList().contains(likesRepository.findOne(likes2)));
     }
 
 
