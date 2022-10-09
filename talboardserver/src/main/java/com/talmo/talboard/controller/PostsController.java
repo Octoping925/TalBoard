@@ -4,7 +4,6 @@ import com.talmo.talboard.config.ResponseConstants;
 import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.Report;
 import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.exception.NoPostFoundException;
@@ -44,7 +43,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 정보를 찾지 못함")
     })
     @PostMapping("/posts/create")
-    public ResponseEntity<Map<String, Object>> createPost(PostCreateVO vo) {
+    public ResponseEntity<ResponseObject> createPost(PostCreateVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Post post = Post.create(vo, member);
@@ -66,7 +65,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "OK : 전체 게시글 조회 실패")
     })
     @GetMapping("/posts")
-    public ResponseEntity<Map<String, Object>> getAllPosts(MemberNoVO vo) {
+    public ResponseEntity<ResponseObject> getAllPosts(MemberNoVO vo) {
         try {
             Set<Member> blockMembers = new HashSet<>();
 
@@ -120,7 +119,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 상세 조회 실패")
     })
     @GetMapping("/posts/{post_no}")
-    public ResponseEntity<Map<String, Object>> getDetailOfPost(@PathVariable(name = "post_no") Long postNo) {
+    public ResponseEntity<ResponseObject> getDetailOfPost(@PathVariable(name = "post_no") Long postNo) {
         try {
             // TODO: N+1 문제 발생 중, 해결 필요
             PostDetailVO vo = new PostDetailVO(postService.findOne(postNo));
@@ -147,7 +146,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 수정 실패")
     })
     @PatchMapping("/posts/{post_no}")
-    public ResponseEntity<Map<String, Object>> updatePost(@PathVariable(name = "post_no") Long postNo, PostUpdateVO vo) {
+    public ResponseEntity<ResponseObject> updatePost(@PathVariable(name = "post_no") Long postNo, PostUpdateVO vo) {
         try {
             Post post = postRepository.findOne(postNo);
             postService.update(post, vo);
@@ -172,7 +171,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 삭제 실패")
     })
     @DeleteMapping("/posts/{post_no}")
-    public ResponseEntity<Map<String, Object>> deletePost(@PathVariable(name = "post_no") Long postNo) {
+    public ResponseEntity<ResponseObject> deletePost(@PathVariable(name = "post_no") Long postNo) {
         try {
             Post post = postRepository.findOne(postNo);
             postService.delete(post);
@@ -191,7 +190,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 존재하지 않는 게시글")
     })
     @GetMapping("/posts/{post_no}/like")
-    public ResponseEntity<Map<String, Object>> getLikeAndDislike(@PathVariable(name = "post_no") Long postNo) {
+    public ResponseEntity<ResponseObject> getLikeAndDislike(@PathVariable(name = "post_no") Long postNo) {
         try {
             Post post = postRepository.findOne(postNo);
             Map<String, Integer> likesDislikesCnt = post.getLikesDislikesCnt();
@@ -211,7 +210,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 추천/비추천 실패")
     })
     @PostMapping("/posts/{post_no}/like")
-    public ResponseEntity<Map<String, Object>> setLikeAndDislike(@PathVariable(name = "post_no") Long postNo, PostLikesVO vo) {
+    public ResponseEntity<ResponseObject> setLikeAndDislike(@PathVariable(name = "post_no") Long postNo, PostLikesVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Post post = postRepository.findOne(postNo);
@@ -280,7 +279,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 사용자 또는 게시글 번호 조회 실패")
     })
     @PostMapping("/posts/{post_no}/report")
-    public ResponseEntity<Map<String, Object>> reportPost(PostReportVO vo) {
+    public ResponseEntity<ResponseObject> reportPost(PostReportVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Post reportPost = postRepository.findOne(vo.getPostNo());
@@ -301,7 +300,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 게시글 조건 검색 실패")
     })
     @GetMapping("/posts/search")
-    public ResponseEntity<Map<String, Object>> getPost(PostRequirementVO vo) {
+    public ResponseEntity<ResponseObject> getPost(PostRequirementVO vo) {
         try {
             List<Post> posts = postService.findRequirementsAll(vo);
             List<PostListVO> postListVO = posts.stream()
@@ -322,7 +321,7 @@ public class PostsController {
             @ApiResponse(code = 404, message = "Not Found : 신고된 글 목록 조회 실패")
     })
     @GetMapping("/posts/report")
-    public ResponseEntity<Map<String, Object>> getAllReportPosts() {
+    public ResponseEntity<ResponseObject> getAllReportPosts() {
         try {
             List<PostReportListVO> postReportListVO = postRepository.findAllReportPosts().stream()
                     .map(PostReportListVO::new)

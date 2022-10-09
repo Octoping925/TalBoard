@@ -1,27 +1,17 @@
 package com.talmo.talboard.integration;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.talmo.talboard.config.ExceptionConstants;
 import com.talmo.talboard.config.ResponseConstants;
+import com.talmo.talboard.config.ResponseObject;
 import com.talmo.talboard.config.TestHelper;
 import com.talmo.talboard.controller.MemberController;
 import com.talmo.talboard.domain.Member;
 import com.talmo.talboard.domain.Post;
-import com.talmo.talboard.domain.vo.MemberBlockVO;
-import com.talmo.talboard.domain.vo.MemberDataChangeVO;
-import com.talmo.talboard.domain.vo.MemberFindIdVO;
-import com.talmo.talboard.domain.vo.MemberFindPasswordVO;
-import com.talmo.talboard.domain.vo.MemberJoinVO;
-import com.talmo.talboard.domain.vo.MemberNoVO;
-import com.talmo.talboard.domain.vo.MemberResignVO;
-import com.talmo.talboard.config.ExceptionConstants;
-import com.talmo.talboard.domain.vo.PostListVO;
+import com.talmo.talboard.domain.vo.*;
 import com.talmo.talboard.repository.MemberRepository;
 import com.talmo.talboard.repository.PostRepository;
 import com.talmo.talboard.service.BlockService;
 import com.talmo.talboard.service.MemberService;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -47,10 +42,10 @@ class MemberIntegrationTest {
         MemberJoinVO vo = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.testEmail);
 
         // when
-        Map<String, Object> body = memberController.join(vo).getBody();
+        ResponseObject body = memberController.join(vo).getBody();
 
         // then
-        assertEquals(ResponseConstants.REGIST_SUCCESS_MESSAGE, body.get("message"));
+        assertEquals(ResponseConstants.REGIST_SUCCESS_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -61,25 +56,25 @@ class MemberIntegrationTest {
         MemberJoinVO vo3 = new MemberJoinVO(TestHelper.testId, TestHelper.testPw, TestHelper.failEmail);
 
         // when
-        ResponseEntity<Map<String, Object>> res = memberController.join(vo);
-        Map<String, Object> body = res.getBody();
-        ResponseEntity<Map<String, Object>> res2 = memberController.join(vo2);
-        Map<String, Object> body2 = res2.getBody();
-        ResponseEntity<Map<String, Object>> res3 = memberController.join(vo3);
-        Map<String, Object> body3 = res3.getBody();
+        ResponseEntity<ResponseObject> res = memberController.join(vo);
+        ResponseObject body = res.getBody();
+        ResponseEntity<ResponseObject> res2 = memberController.join(vo2);
+        ResponseObject body2 = res2.getBody();
+        ResponseEntity<ResponseObject> res3 = memberController.join(vo3);
+        ResponseObject body3 = res3.getBody();
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.INVALID_ID_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.INVALID_ID_MESSAGE, body.getMessage());
 
         assertEquals(HttpStatus.BAD_REQUEST, res2.getStatusCode());
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, body2.get("message"));
+        assertNull(body2.getData());
+        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, body2.getMessage());
 
         assertEquals(HttpStatus.BAD_REQUEST, res3.getStatusCode());
-        assertNull(body3.get("data"));
-        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, body3.get("message"));
+        assertNull(body3.getData());
+        assertEquals(ExceptionConstants.INVALID_EMAIL_MESSAGE, body3.getMessage());
     }
 
     @Test
@@ -92,19 +87,19 @@ class MemberIntegrationTest {
         vo2.setId(TestHelper.testId2);
 
         // when
-        ResponseEntity<Map<String, Object>> res = memberController.join(vo);
-        Map<String, Object> body = res.getBody();
-        ResponseEntity<Map<String, Object>> res2 = memberController.join(vo2);
-        Map<String, Object> body2 = res2.getBody();
+        ResponseEntity<ResponseObject> res = memberController.join(vo);
+        ResponseObject body = res.getBody();
+        ResponseEntity<ResponseObject> res2 = memberController.join(vo2);
+        ResponseObject body2 = res2.getBody();
 
         // then
         assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.DUPLICATE_ID_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.DUPLICATE_ID_MESSAGE, body.getMessage());
 
         assertEquals(HttpStatus.CONFLICT, res2.getStatusCode());
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, body2.get("message"));
+        assertNull(body2.getData());
+        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, body2.getMessage());
 
     }
 
@@ -121,16 +116,16 @@ class MemberIntegrationTest {
 
         // when
         MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
-        Map<String, Object> body = memberController.resign(vo).getBody();
+        ResponseObject body = memberController.resign(vo).getBody();
 
         MemberResignVO vo2 = new MemberResignVO(member3.getMemberNo(), member3.getMemberNo());
-        Map<String, Object> body2 = memberController.resign(vo2).getBody();
+        ResponseObject body2 = memberController.resign(vo2).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body.get("message"));
-        assertNull(body2.get("data"));
-        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body2.get("message"));
+        assertNull(body.getData());
+        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body.getMessage());
+        assertNull(body2.getData());
+        assertEquals(ResponseConstants.RESIGN_SUCCESS_MESSAGE, body2.getMessage());
     }
 
     @Test
@@ -143,11 +138,11 @@ class MemberIntegrationTest {
 
         // when
         MemberResignVO vo = new MemberResignVO(member.getMemberNo(), member2.getMemberNo());
-        Map<String, Object> body = memberController.resign(vo).getBody();
+        ResponseObject body = memberController.resign(vo).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -160,17 +155,17 @@ class MemberIntegrationTest {
         MemberResignVO vo3 = new MemberResignVO(-1L, -1L);
 
         // when
-        Map<String, Object> body = memberController.resign(vo).getBody();
-        Map<String, Object> body2 = memberController.resign(vo2).getBody();
-        Map<String, Object> body3 = memberController.resign(vo3).getBody();
+        ResponseObject body = memberController.resign(vo).getBody();
+        ResponseObject body2 = memberController.resign(vo2).getBody();
+        ResponseObject body3 = memberController.resign(vo3).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
-        assertNull(body2.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.get("message"));
-        assertNull(body3.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body3.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.getMessage());
+        assertNull(body2.getData());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.getMessage());
+        assertNull(body3.getData());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body3.getMessage());
     }
 
     @Test
@@ -182,11 +177,11 @@ class MemberIntegrationTest {
         vo.setEmailAddress(member.getEmailAddress());
 
         // when
-        Map<String, Object> body = memberController.findId(vo).getBody();
+        ResponseObject body = memberController.findId(vo).getBody();
 
         // then
-        assertEquals(member.getId(), body.get("data"));
-        assertEquals(ResponseConstants.FINDID_SUCCESS_MESSAGE, body.get("message"));
+        assertEquals(member.getId(), body.getData());
+        assertEquals(ResponseConstants.FINDID_SUCCESS_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -196,11 +191,11 @@ class MemberIntegrationTest {
         vo.setEmailAddress(TestHelper.testEmail);
 
         // when
-        Map<String, Object> body = memberController.findId(vo).getBody();
+        ResponseObject body = memberController.findId(vo).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -212,11 +207,11 @@ class MemberIntegrationTest {
         vo.setId(member.getId());
 
         // when
-        Map<String, Object> body = memberController.findPassword(vo).getBody();
+        ResponseObject body = memberController.findPassword(vo).getBody();
 
         // then
-        assertEquals(member.getPassword(), body.get("data"));
-        assertEquals(ResponseConstants.FINDPW_SUCCESS_MESSAGE, body.get("message"));
+        assertEquals(member.getPassword(), body.getData());
+        assertEquals(ResponseConstants.FINDPW_SUCCESS_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -226,11 +221,11 @@ class MemberIntegrationTest {
         vo.setId(TestHelper.testPw);
 
         // when
-        Map<String, Object> body = memberController.findPassword(vo).getBody();
+        ResponseObject body = memberController.findPassword(vo).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -276,18 +271,18 @@ class MemberIntegrationTest {
         vo3.setEmailAddress(TestHelper.testEmail);
 
         // when
-        Map<String, Object> body = memberController.changeAccountInfo(vo).getBody();
-        Map<String, Object> body2 = memberController.changeAccountInfo(vo2).getBody();
-        Map<String, Object> body3 = memberController.changeAccountInfo(vo3).getBody();
+        ResponseObject body = memberController.changeAccountInfo(vo).getBody();
+        ResponseObject body2 = memberController.changeAccountInfo(vo2).getBody();
+        ResponseObject body3 = memberController.changeAccountInfo(vo3).getBody();
 
         // then
-        assertNull(body.get("data"));
-        assertNull(body2.get("data"));
-        assertNull(body3.get("data"));
+        assertNull(body.getData());
+        assertNull(body2.getData());
+        assertNull(body3.getData());
 
-        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, body.get("message"));
-        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.get("message"));
-        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, body3.get("message"));
+        assertEquals(ExceptionConstants.INVALID_PW_MESSAGE, body.getMessage());
+        assertEquals(ExceptionConstants.NO_MEMBER_FOUND_MESSAGE, body2.getMessage());
+        assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, body3.getMessage());
     }
 
     @Test
@@ -310,13 +305,13 @@ class MemberIntegrationTest {
         MemberBlockVO vo = new MemberBlockVO();
         vo.setMemberNo(member.getMemberNo());
         vo.setBlockedMemberNo(member2.getMemberNo());
-        ResponseEntity<Map<String, Object>> res = memberController.blockMember(vo);
+        ResponseEntity<ResponseObject> res = memberController.blockMember(vo);
 
         // then
-        Map<String, Object> body = res.getBody();
+        ResponseObject body = res.getBody();
         assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.BLOCK_SUCCESS_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ResponseConstants.BLOCK_SUCCESS_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -336,13 +331,13 @@ class MemberIntegrationTest {
         MemberBlockVO vo = new MemberBlockVO();
         vo.setMemberNo(member.getMemberNo());
         vo.setBlockedMemberNo(member2.getMemberNo());
-        ResponseEntity<Map<String, Object>> res = memberController.unblockMember(vo);
+        ResponseEntity<ResponseObject> res = memberController.unblockMember(vo);
 
         // then
-        Map<String, Object> body = res.getBody();
+        ResponseObject body = res.getBody();
         assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertNull(body.get("data"));
-        assertEquals(ResponseConstants.UNBLOCK_SUCCESS_MESSAGE, body.get("message"));
+        assertNull(body.getData());
+        assertEquals(ResponseConstants.UNBLOCK_SUCCESS_MESSAGE, body.getMessage());
     }
 
     @Test
@@ -365,9 +360,9 @@ class MemberIntegrationTest {
         vo.setMemberNo(member.getMemberNo());
 
         // when
-        Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostListVO> postList = (List<PostListVO>) body.get("data");
-        String message = (String) body.get("message");
+        ResponseObject body = memberController.getMemberPostList(vo).getBody();
+        List<PostListVO> postList = (List<PostListVO>) body.getData();
+        String message = body.getMessage();
 
         // then
         assertEquals(2, postList.size());
@@ -385,9 +380,9 @@ class MemberIntegrationTest {
         vo.setMemberNo(-1L);
 
         // when
-        Map<String, Object> body = memberController.getMemberPostList(vo).getBody();
-        List<PostListVO> postList = (List<PostListVO>) body.get("data");
-        String message = (String) body.get("message");
+        ResponseObject body = memberController.getMemberPostList(vo).getBody();
+        List<PostListVO> postList = (List<PostListVO>) body.getData();
+        String message = body.getMessage();
 
         // then
         assertEquals(0, postList.size());

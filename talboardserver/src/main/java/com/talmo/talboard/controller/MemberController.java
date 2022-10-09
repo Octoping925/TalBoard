@@ -14,15 +14,14 @@ import com.talmo.talboard.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class MemberController {
 //            @ApiResponse(code = 400, message = "로그인 실패")
 //    })
 //    @PostMapping("/members/login")
-//    public ResponseEntity<Map<String, Object>> login(Object vo) {
+//    public ResponseEntity<ResponseObject> login(Object vo) {
 //            return ResponseEntity.ok()
 //                    .body(ResponseObject.create(null, "로그인 성공"));
 //    }
@@ -48,7 +47,7 @@ public class MemberController {
 //            @ApiResponse(code = 400, message = "로그아웃 실패")
 //    })
 //    @GetMapping("/members/logout")
-//    public ResponseEntity<Map<String, Object>> logout(Object vo) {
+//    public ResponseEntity<ResponseObject> logout(Object vo) {
 //        return ResponseEntity.ok()
 //                .body(ResponseObject.create(null, "로그아웃 성공"));
 //    }
@@ -60,7 +59,7 @@ public class MemberController {
             @ApiResponse(code = 409, message = "이미 존재하는 아이디 또는 이메일")
     })
     @PostMapping("/members/regist")
-    public ResponseEntity<Map<String, Object>> join(MemberJoinVO vo) {
+    public ResponseEntity<ResponseObject> join(MemberJoinVO vo) {
         try {
             Member member = Member.regist(vo);
             Long memberNo = memberService.join(member);
@@ -83,7 +82,7 @@ public class MemberController {
             @ApiResponse(code = 404, message = "회원 정보 찾지 못함")
     })
     @DeleteMapping("/members/resign")
-    public ResponseEntity<Map<String, Object>> resign(MemberResignVO vo) {
+    public ResponseEntity<ResponseObject> resign(MemberResignVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Member resignMember = memberRepository.findOne(vo.getResignMemberNo());
@@ -106,7 +105,7 @@ public class MemberController {
             @ApiResponse(code = 400, message = "회원 정보 찾지 못함")
     })
     @GetMapping("/members/find/id")
-    public ResponseEntity<Map<String, Object>> findId(MemberFindIdVO vo) {
+    public ResponseEntity<ResponseObject> findId(MemberFindIdVO vo) {
         try {
             String id = memberService.findId(vo.getEmailAddress());
             return ResponseEntity.ok()
@@ -124,7 +123,7 @@ public class MemberController {
             @ApiResponse(code = 400, message = "회원 정보 찾지 못함")
     })
     @GetMapping("/members/find/password")
-    public ResponseEntity<Map<String, Object>> findPassword(MemberFindPasswordVO vo) {
+    public ResponseEntity<ResponseObject> findPassword(MemberFindPasswordVO vo) {
         try {
             String password = memberService.findPassword(vo.getId());
             return ResponseEntity.ok()
@@ -144,7 +143,7 @@ public class MemberController {
             @ApiResponse(code = 409, message = "동일한 이메일 존재")
     })
     @PatchMapping("/members/accountInfo")
-    public ResponseEntity<Map<String, Object>> changeAccountInfo(MemberDataChangeVO vo) {
+    public ResponseEntity<ResponseObject> changeAccountInfo(MemberDataChangeVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             memberService.updateMemberData(member, vo);
@@ -168,7 +167,7 @@ public class MemberController {
             @ApiResponse(code = 200, message = "조회 성공")
     })
     @GetMapping("/members/block")
-    public ResponseEntity<Map<String, Object>> findBlockList(MemberFindBlockListVO vo) {
+    public ResponseEntity<ResponseObject> findBlockList(MemberFindBlockListVO vo) {
         List<MemberInfoVO> blockList;
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
@@ -191,7 +190,7 @@ public class MemberController {
             @ApiResponse(code = 404, message = "회원 정보 찾지 못함"),
     })
     @PostMapping("/members/block")
-    public ResponseEntity<Map<String, Object>> blockMember(MemberBlockVO vo) {
+    public ResponseEntity<ResponseObject> blockMember(MemberBlockVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Member blockMember = memberRepository.findOne(vo.getBlockedMemberNo());
@@ -210,7 +209,7 @@ public class MemberController {
             @ApiResponse(code = 404, message = "회원 정보 찾지 못함"),
     })
     @DeleteMapping("/members/block")
-    public ResponseEntity<Map<String, Object>> unblockMember(MemberBlockVO vo) {
+    public ResponseEntity<ResponseObject> unblockMember(MemberBlockVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             Member blockMember = memberRepository.findOne(vo.getBlockedMemberNo());
@@ -229,7 +228,7 @@ public class MemberController {
         @ApiResponse(code = 200, message = "조회 성공"),
     })
     @GetMapping("/members/posts")
-    public ResponseEntity<Map<String, Object>> getMemberPostList(MemberNoVO vo) {
+    public ResponseEntity<ResponseObject> getMemberPostList(MemberNoVO vo) {
         try {
             Member member = memberRepository.findOne(vo.getMemberNo());
             List<Post> postList = member.getPosts();

@@ -1,17 +1,19 @@
 package com.talmo.talboard.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Data;
 
+@Data
 public class ResponseObject {
-    private ResponseObject() {
-        throw new IllegalStateException("Utility Class");
+
+    Object data;
+    String message;
+
+    private ResponseObject(Object data, String message) {
+        this.data = data;
+        this.message = message;
     }
 
-    public static Map<String, Object> create(Object data, String message) {
-        Map<String, Object> res = new HashMap<>();
-        res.put("data", data);
-        res.put("message", message);
-        return res;
+    public static ResponseObject create(Object data, String message) {
+        return new ResponseObject(data, message);
     }
 }
