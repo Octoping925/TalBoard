@@ -61,11 +61,8 @@ public class Member {
     @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() == obj.getClass()) {
-            return Objects.equals(this.memberNo, ((Member) obj).getMemberNo());
-        }
-        return false;
+        if(!(obj instanceof Member)) return false;
+        return Objects.equals(this.memberNo, ((Member) obj).getMemberNo());
     }
 
     @Override
