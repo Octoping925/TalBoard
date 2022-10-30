@@ -30,27 +30,27 @@ public class MemberController {
     private final BlockService blockService;
     private final MemberRepository memberRepository;
 
-//    @ApiOperation(value="로그인")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "로그인 성공"),
-//            @ApiResponse(code = 400, message = "로그인 실패")
-//    })
-//    @PostMapping("/members/login")
-//    public ResponseEntity<ResponseObject> login(Object vo) {
-//            return ResponseEntity.ok()
-//                    .body(ResponseObject.create(null, "로그인 성공"));
-//    }
-//
-//    @ApiOperation(value="로그아웃")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "로그아웃 성공"),
-//            @ApiResponse(code = 400, message = "로그아웃 실패")
-//    })
-//    @GetMapping("/members/logout")
-//    public ResponseEntity<ResponseObject> logout(Object vo) {
-//        return ResponseEntity.ok()
-//                .body(ResponseObject.create(null, "로그아웃 성공"));
-//    }
+    @ApiOperation(value="로그인")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "로그인 성공"),
+            @ApiResponse(code = 400, message = "로그인 실패")
+    })
+    @PostMapping("/members/login")
+    public ResponseEntity<ResponseObject> login(Object vo) {
+            return ResponseEntity.ok()
+                    .body(ResponseObject.create(null, ResponseConstants.LOGIN_SUCCESS_MESSAGE));
+    }
+
+    @ApiOperation(value="로그아웃")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "로그아웃 성공"),
+            @ApiResponse(code = 400, message = "로그아웃 실패")
+    })
+    @GetMapping("/members/logout")
+    public ResponseEntity<ResponseObject> logout(Object vo) {
+        return ResponseEntity.ok()
+                .body(ResponseObject.create(null, ResponseConstants.LOGOUT_SUCCESS_MESSAGE));
+    }
 
     @ApiOperation(value="회원 가입")
     @ApiResponses({

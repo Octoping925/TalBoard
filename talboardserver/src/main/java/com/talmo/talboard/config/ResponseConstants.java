@@ -10,6 +10,9 @@ public class ResponseConstants {
     public static final String REGIST_SUCCESS_MESSAGE = "회원 가입 성공";
     public static final String RESIGN_SUCCESS_MESSAGE = "회원 탈퇴 성공";
 
+    public static final String LOGIN_SUCCESS_MESSAGE = "로그인 성공";
+    public static final String LOGOUT_SUCCESS_MESSAGE = "로그아웃 성공";
+
     public static final String FINDID_SUCCESS_MESSAGE = "아이디 찾기 성공";
     public static final String FINDPW_SUCCESS_MESSAGE = "비밀번호 찾기 성공";
 
