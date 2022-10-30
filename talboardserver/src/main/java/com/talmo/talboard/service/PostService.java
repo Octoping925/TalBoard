@@ -23,7 +23,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Post findOne(Long postNo) {
         Post post = postRepository.findOne(postNo);
 
@@ -34,7 +34,7 @@ public class PostService {
         return post;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Post> findRequirementsAll(PostRequirementVO vo) {
         if(vo.getMemberId() != null && vo.getTitle() != null) {
             throw new IllegalArgumentException("하나의 값만 넣어주세요.");
@@ -47,7 +47,7 @@ public class PostService {
         throw new IllegalArgumentException("작성자 또는 제목을 검색 해주세요.");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Report> findAllReportPosts() {
         return postRepository.findAllReportPosts();
     }

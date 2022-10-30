@@ -23,7 +23,7 @@ public class NoticeRepository {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Notice findOne(Long noticeNo) {
         Notice notice = em.find(Notice.class, noticeNo);
         if(notice == null) throw new NoNoticeFoundException();

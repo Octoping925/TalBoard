@@ -56,7 +56,7 @@ public class MemberService {
     /**
      * 이메일 주소로 아이디 찾기
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public String findId(String emailAddress) throws NoMemberFoundException {
         return memberRepository.findOneActualMemberByEmailAddress(emailAddress).getId();
     }
@@ -64,7 +64,7 @@ public class MemberService {
     /**
      * 아이디로 비밀번호 찾기
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public String findPassword(String id) throws NoMemberFoundException {
         // TODO: 해당 멤버의 이메일 주소로 비밀번호 정보 보내는 기능
         return memberRepository.findOneActualMemberById(id).getPassword();

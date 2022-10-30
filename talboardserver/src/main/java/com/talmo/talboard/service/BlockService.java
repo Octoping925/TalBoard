@@ -48,10 +48,4 @@ public class BlockService {
             blockRepository.delete(block);
         }
     }
-
-    @Transactional
-    public void unblockMember(Block block) {
-        blockRepository.delete(block);
-    }
-
 }
