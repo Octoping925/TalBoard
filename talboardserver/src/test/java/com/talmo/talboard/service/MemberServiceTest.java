@@ -11,6 +11,7 @@ import com.talmo.talboard.exception.NoMemberFoundException;
 import com.talmo.talboard.repository.MemberRepository;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,16 @@ class MemberServiceTest {
     @Autowired MemberRepository memberRepository;
     @Autowired
     BlockService blockService;
+
+    Member member1, member2;
+
+    @BeforeEach
+    void beforeEach() {
+        member1 = TestHelper.createMember(1);
+        member2 = TestHelper.createMember(2);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+    }
 
     @Test
     void join() {
@@ -60,33 +71,25 @@ class MemberServiceTest {
     @Test
     void resign() {
         // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-        member.setAdminYn(true);
+        member1.setAdminYn(true);
 
-        memberRepository.save(member);
+        memberRepository.save(member1);
         memberRepository.save(member2);
 
         // when
-        memberService.resign(member, member2);
-        memberService.resign(member, member);
+        memberService.resign(member1, member2);
+        memberService.resign(member1, member1);
 
         // then
-        assertTrue(member.isResignYn());
+        assertTrue(member1.isResignYn());
         assertTrue(member2.isResignYn());
     }
 
     @Test
     void resign_실패() {
         // given
-        Member member = TestHelper.createMember(1);
-        Member member2 = TestHelper.createMember(2);
-
-        memberRepository.save(member);
-        memberRepository.save(member2);
-
         // when
-        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member, member2));
+        NoAuthorizationException thrown = assertThrows(NoAuthorizationException.class, () -> memberService.resign(member1, member2));
 
         // then
         assertEquals(ExceptionConstants.NO_AUTHORIZE_MESSAGE, thrown.getMessage());
@@ -95,14 +98,11 @@ class MemberServiceTest {
     @Test
     void findId() {
         // given
-        Member member = TestHelper.createMember();
-        memberService.join(member);
-
         // when
-        String findId = memberService.findId(member.getEmailAddress());
+        String findId = memberService.findId(member1.getEmailAddress());
 
         // then
-        assertEquals(member.getId(), findId);
+        assertEquals(member1.getId(), findId);
     }
 
     @Test
@@ -114,14 +114,11 @@ class MemberServiceTest {
     @Test
     void findPassword() {
         // given
-        Member member = TestHelper.createMember();
-        memberService.join(member);
-
         // when
-        String findPassword = memberService.findPassword(member.getId());
+        String findPassword = memberService.findPassword(member1.getId());
 
         // then
-        assertEquals(member.getPassword(), findPassword);
+        assertEquals(member1.getPassword(), findPassword);
     }
 
     @Test
@@ -133,32 +130,26 @@ class MemberServiceTest {
     @Test
     void updateMemberData() {
         // given
-        Member member = TestHelper.createMember();
-        memberRepository.save(member);
-
         MemberDataChangeVO vo = new MemberDataChangeVO();
-        vo.setMemberNo(member.getMemberNo());
+        vo.setMemberNo(member1.getMemberNo());
         vo.setPassword(TestHelper.testPw2);
 
         // when
-        memberService.updateMemberData(member, vo);
+        memberService.updateMemberData(member1, vo);
 
         // then
-        assertEquals(TestHelper.testPw2, memberRepository.findOne(member.getMemberNo()).getPassword());
+        assertEquals(TestHelper.testPw2, memberRepository.findOne(member1.getMemberNo()).getPassword());
     }
 
     @Test
     void updateMemberData_실패() {
         // given
-        Member member = TestHelper.createMember();
-        memberRepository.save(member);
-
         MemberDataChangeVO vo = new MemberDataChangeVO();
-        vo.setMemberNo(member.getMemberNo());
-        vo.setEmailAddress(member.getEmailAddress());
+        vo.setMemberNo(member1.getMemberNo());
+        vo.setEmailAddress(member1.getEmailAddress());
 
         // when
-        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(member, vo));
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.updateMemberData(member1, vo));
 
         // then
         assertEquals(ExceptionConstants.DUPLICATE_EMAIL_MESSAGE, thrown.getMessage());
